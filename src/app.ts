@@ -27,7 +27,7 @@ async function main() {
       }
       // Only try to join the sender's voice channel if they are in one themselves
       if (message.member.voice.channel) {
-        const media = mediaManager.getByFileName(message.content.split(' ').pop())
+        const [media] = mediaManager.getBySearch(message.content.split(' ').pop())
         if (media) {
           const connection = await message.member.voice.channel.join()
           const dispatcher = connection.play(media)
