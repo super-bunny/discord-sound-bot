@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import Fuse from 'fuse.js'
 
 export default class MediaManager {
   readonly data: string[]
@@ -9,7 +10,8 @@ export default class MediaManager {
   }
 
   getBySearch(query: string): string[] {
-    return []
+    const fuse = new Fuse(this.getFilenameList(), {})
+    return fuse.search(query).map(result => this.data[result.refIndex])
   }
 
   getByFileName(fileNameQuery: string): string {
