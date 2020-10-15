@@ -20,11 +20,11 @@ async function main() {
     // we ignore it
     if (!message.guild) return
 
+    if (!message.member.roles.cache.some(role => role.name === process.env.DISCORD_ROLE_NAME)) {
+      return
+    }
     if (message.content.split(' ').shift() === '/p') {
       // Prevent non authorized member to execute command
-      if (!message.member.roles.cache.some(role => role.name === process.env.DISCORD_ROLE_NAME)) {
-        return
-      }
       // Only try to join the sender's voice channel if they are in one themselves
       if (message.member.voice.channel) {
         const queryTokens = message.content.split(' ')
@@ -38,6 +38,8 @@ async function main() {
       } else {
         message.reply('You need to join a voice channel first!')
       }
+    } else if (message.content.split(' ').shift() === '/list') {
+      message.reply('```' + mediaManager.getFilenameList().join('\n') + '```')
     }
   })
 
