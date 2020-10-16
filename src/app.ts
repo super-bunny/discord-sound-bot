@@ -40,6 +40,15 @@ async function main() {
       }
     } else if (message.content.split(' ').shift() === '/list') {
       message.reply('```' + mediaManager.getFilenameList().join('\n') + '```')
+    } else if (message.content.split(' ').shift() === '/r') {
+      if (message.member.voice.channel) {
+        const randomIndex = Math.trunc(Math.random() * mediaManager.data.length)
+        const media = mediaManager.data[randomIndex]
+        const connection = await message.member.voice.channel.join()
+        const dispatcher = connection.play(media)
+      } else {
+        message.reply('You need to join a voice channel first!')
+      }
     }
   })
 
