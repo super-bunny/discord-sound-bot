@@ -12,7 +12,7 @@ async function main() {
   const mediaManager = await MediaManager.init(process.env.MEDIA_FOLDER)
 
   client.on('ready', () => {
-    console.log('I am ready!')
+    console.log('Discord bot ready!')
   })
 
   client.on('message', async message => {
