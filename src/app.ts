@@ -46,6 +46,7 @@ async function main() {
         const media = mediaManager.data[randomIndex]
         const connection = await message.member.voice.channel.join()
         const dispatcher = connection.play(media)
+        message.reply(`Playing *${ mediaManager.getFilenameList()[randomIndex] }*`)
       } else {
         message.reply('You need to join a voice channel first!')
       }
