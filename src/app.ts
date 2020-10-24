@@ -53,6 +53,17 @@ async function main() {
     }
   })
 
+  client.on('voiceStateUpdate', (oldMember, newMember) => {
+    // If a member disconnect from voice channel
+    if (oldMember.channelID !== null && oldMember.channelID !== newMember.channelID) {
+      const connection = client.voice.connections.find(connection => connection.channel.id === oldMember.channelID)
+      // If last channel member is this bot
+      if (connection && oldMember.channel.members.array().length === 1) {
+        connection.disconnect()
+      }
+    }
+  })
+
   await client.login(process.env.DISCORD_TOKEN)
 }
 
