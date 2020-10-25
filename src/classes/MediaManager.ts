@@ -3,9 +3,11 @@ import * as path from 'path'
 import Fuse from 'fuse.js'
 
 export default class MediaManager {
-  readonly data: string[]
+  readonly mediaFolderPath: string
+  data: string[]
 
-  constructor(mediaPathList: string[]) {
+  constructor(mediaPathList: string[], mediaFolderPath: string) {
+    this.mediaFolderPath = mediaFolderPath
     this.data = mediaPathList
   }
 
@@ -25,9 +27,15 @@ export default class MediaManager {
     return this.data.map(filePath => path.basename(filePath, '.' + filePath.split('.').pop()))
   }
 
+  async refresh() {
+    fs.promises.readdir(this.mediaFolderPath)
+      .then(files => files.map(file => path.resolve(this.mediaFolderPath, file)))
+      .then(files => this.data = files)
+  }
+
   static async init(mediaFolderPath): Promise<MediaManager> {
     return fs.promises.readdir(mediaFolderPath)
       .then(files => files.map(file => path.resolve(mediaFolderPath, file)))
-      .then(files => new MediaManager(files))
+      .then(files => new MediaManager(files, mediaFolderPath))
   }
 }
