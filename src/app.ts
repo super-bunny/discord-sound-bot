@@ -5,6 +5,7 @@ import MediaManager from './classes/MediaManager'
 
 env.get('MEDIA_FOLDER').required().asString()
 env.get('DISCORD_TOKEN').required().asString()
+env.get('DISCORD_OWNER_ID').required().asString()
 env.get('DISCORD_ROLE_NAME').required().asString()
 
 async function main() {

@@ -6,3 +6,7 @@ function findChannelByMember(client: Discord.Client, nickname: string): Discord.
   return channels.find(channel =>
     channel.members.find(member => member.nickname === nickname))
 }
+
+export function getBotOwner(client: Discord.Client) {
+  return client.users.fetch(process.env.DISCORD_OWNER_ID)
+}
