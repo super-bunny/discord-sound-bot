@@ -1,7 +1,9 @@
 require('dotenv').config()
+import chokidar from 'chokidar'
 import * as env from 'env-var'
 import * as Discord from 'discord.js'
 import MediaManager from './classes/MediaManager'
+import { getBotOwner } from './utils'
 
 env.get('MEDIA_FOLDER').required().asString()
 env.get('DISCORD_TOKEN').required().asString()
@@ -11,6 +13,30 @@ env.get('DISCORD_ROLE_NAME').required().asString()
 async function main() {
   const client = new Discord.Client()
   const mediaManager = await MediaManager.init(process.env.MEDIA_FOLDER)
+
+  const watcher = chokidar.watch(process.env.MEDIA_FOLDER, {
+    ignored: /^\./,
+    persistent: true,
+    ignoreInitial: true,
+    usePolling: true,
+  })
+    .on('add', (path) => {
+      console.log(`File ${ path.split('/').pop() } added, refreshing media list...`)
+      mediaManager.refresh()
+        .then(() => console.log('Media list refreshed'))
+        .then(() => getBotOwner(client))
+        .then(owner => owner.send(`File **${ path.split('/').pop() }** added. :new:\nMedia list refreshed :recycle:`))
+    })
+    .on('unlink', (path) => {
+      console.log(`File ${ path.split('/').pop() } removed, refreshing media list...`)
+      mediaManager.refresh()
+        .then(() => console.log('Media list refreshed'))
+        .then(() => getBotOwner(client))
+        .then(owner => owner.send(`File **${ path.split('/').pop() }** removed. :wastebasket:\nMedia list refreshed :recycle:`))
+    })
+    .on('error', (error) => {
+      console.error('Chokidar error happened', error)
+    })
 
   client.on('ready', () => {
     console.log('Discord bot ready!')
