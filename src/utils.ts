@@ -1,10 +1,9 @@
-import Discord from 'discord.js'
+import Discord, { GuildMember } from 'discord.js'
 
-function findChannelByMember(client: Discord.Client, nickname: string): Discord.VoiceChannel {
+export function getMemberVoiceChannel(client: Discord.Client, filter: (member: GuildMember) => boolean): Discord.VoiceChannel {
   const channels = client.channels.cache.array()
     .filter(channel => channel.type === 'voice') as Discord.VoiceChannel[]
-  return channels.find(channel =>
-    channel.members.find(member => member.nickname === nickname))
+  return channels.find(channel => channel.members.find(filter))
 }
 
 export function getBotOwner(client: Discord.Client) {
