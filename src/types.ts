@@ -6,6 +6,7 @@ export interface ApiConfig {
 }
 
 export interface IConfig {
+  listPageSize: number,
   prefix: string
   api: ApiConfig
 }

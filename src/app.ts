@@ -1,8 +1,10 @@
 require('dotenv').config()
+
 import chokidar from 'chokidar'
 import Bot from './classes/Bot'
 import * as env from 'env-var'
 import { getBotOwner } from './utils'
+import list from './commands/list'
 
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
@@ -67,7 +69,7 @@ async function main() {
         message.reply('You need to join a voice channel first!')
       }
     } else if (message.content.split(' ').shift() === '/list') {
-      message.reply('```' + bot.mediaManager.getFilenameList().join('\n') + '```')
+      list(bot, message)
     } else if (message.content.split(' ').shift() === '/r') {
       if (message.member.voice.channel) {
         const randomIndex = Math.trunc(Math.random() * bot.mediaManager.data.length)
