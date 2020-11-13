@@ -1,7 +1,6 @@
 import express from 'express'
-import { Client } from 'discord.js'
+import Discord, { Client } from 'discord.js'
 import MediaManager from './MediaManager'
-import Discord from 'discord.js'
 import Api from '../api'
 import { IConfig } from '../types'
 
@@ -14,7 +13,10 @@ export default class Bot {
   constructor(discord: Client, mediaManager: MediaManager, config?: IConfig) {
     this.discord = discord
     this.mediaManager = mediaManager
-    this.config = config
+    this.config = {
+      listPageSize: 25,
+      ...config,
+    }
   }
 
   async startApi(): Promise<void> {
