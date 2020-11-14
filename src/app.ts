@@ -4,7 +4,9 @@ import chokidar from 'chokidar'
 import Bot from './classes/Bot'
 import * as env from 'env-var'
 import { getBotOwner } from './utils'
-import list from './commands/list'
+import listCommand from './commands/list'
+import playCommand from './commands/play'
+import randomCommand from './commands/random'
 
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
@@ -41,46 +43,9 @@ async function main() {
       console.error('Chokidar error happened', error)
     })
 
-
-  bot.command('list', ['l', 'ls'], 'List playable sounds', (message, bot) => list(bot, message))
-
-  bot.command('play', ['p'], 'Play specified sound', async (message, bot) => {
-    if (!message.guild) {
-      return message.reply('Command only available in server')
-    }
-    // Check if message author is in voice channel
-    if (!message.member?.voice.channel) {
-      return message.reply('You need to join a voice channel first!')
-    }
-
-    const queryTokens = message.content.split(' ')
-    const [media] = bot.mediaManager.getBySearch(queryTokens.slice(1, queryTokens.length).join(' '))
-
-    if (media) {
-      const connection = await message.member.voice.channel.join()
-      const dispatcher = connection.play(media)
-    } else {
-      return message.reply('Media not found :upside_down:')
-    }
-  })
-
-  bot.command('random', ['r'], 'Play random sound', async (message, bot) => {
-    if (!message.guild) {
-      return message.reply('Command only available in server')
-    }
-    // Check if message author is in voice channel
-    if (!message.member?.voice.channel) {
-      return message.reply('You need to join a voice channel first!')
-    }
-
-    const randomIndex = Math.trunc(Math.random() * bot.mediaManager.data.length)
-    const media = bot.mediaManager.data[randomIndex]
-    const connection = await message.member.voice.channel.join()
-    const dispatcher = connection.play(media)
-
-    return message.reply(`Playing *${ bot.mediaManager.getFilenameList()[randomIndex] }*`)
-  })
-
+  bot.command('list', ['l', 'ls'], 'List playable sounds', listCommand)
+  bot.command('play', ['p'], 'Play specified sound', playCommand)
+  bot.command('random', ['r'], 'Play random sound', randomCommand)
 
   bot.discord.on('voiceStateUpdate', (oldMember, newMember) => {
     // If a member disconnect from voice channel
