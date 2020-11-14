@@ -60,7 +60,7 @@ async function main() {
       const connection = await message.member.voice.channel.join()
       const dispatcher = connection.play(media)
     } else {
-      return message.reply('Media not found :(')
+      return message.reply('Media not found :upside_down:')
     }
   })
 
