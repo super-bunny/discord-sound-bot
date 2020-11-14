@@ -93,8 +93,6 @@ async function main() {
       }
     }
   })
-
-  await bot.discord.login(process.env.DISCORD_TOKEN)
 }
 
 main()
