@@ -23,7 +23,7 @@ export default class Bot {
     this.api = await Api.start(this, this.config.api)
   }
 
-  static async init(config?: IConfig): Promise<Bot> {
+  static async start(config?: IConfig): Promise<Bot> {
     const mediaManager = await MediaManager.init(process.env.MEDIA_FOLDER)
     const discord = new Discord.Client()
     await discord.login(process.env.DISCORD_TOKEN)

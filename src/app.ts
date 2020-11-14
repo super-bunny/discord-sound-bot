@@ -15,7 +15,7 @@ env.get('DISCORD_ROLE_NAME').required().asString()
 const config = require(process.env.CONFIG_FILE || '../config.json')
 
 async function main() {
-  const bot = await Bot.init(config)
+  const bot = await Bot.start(config)
 
   const watcher = chokidar.watch(process.env.MEDIA_FOLDER, {
     ignored: /^\./,
