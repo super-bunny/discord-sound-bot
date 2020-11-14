@@ -28,14 +28,14 @@ async function main() {
       bot.mediaManager.refresh()
         .then(() => console.log('Media list refreshed'))
         .then(() => getBotOwner(bot.discord))
-        .then(owner => owner.send(`File **${ path.split('/').pop() }** added. :new:\nMedia list refreshed :recycle:`))
+        .then(owner => owner.send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
     })
     .on('unlink', (path) => {
       console.log(`File ${ path.split('/').pop() } removed, refreshing media list...`)
       bot.mediaManager.refresh()
         .then(() => console.log('Media list refreshed'))
         .then(() => getBotOwner(bot.discord))
-        .then(owner => owner.send(`File **${ path.split('/').pop() }** removed. :wastebasket:\nMedia list refreshed :recycle:`))
+        .then(owner => owner.send(`:wastebasket: File **${ path.split('/').pop() }** removed. \n:recycle: Media list refreshed`))
     })
     .on('error', (error) => {
       console.error('Chokidar error happened', error)
