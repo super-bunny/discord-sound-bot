@@ -41,47 +41,46 @@ async function main() {
       console.error('Chokidar error happened', error)
     })
 
-  bot.discord.on('ready', () => {
-    console.log('Discord bot ready!')
-  })
 
-  bot.discord.on('message', async message => {
-    // Voice only works in guilds, if the message does not come from a guild,
-    // we ignore it
-    if (!message.guild) return
+  bot.command('list', ['l', 'ls'], 'List playable sounds', (message, bot) => list(bot, message))
 
-    if (!message.member.roles.cache.some(role => role.name === process.env.DISCORD_ROLE_NAME)) {
-      return
+  bot.command('play', ['p'], 'Play specified sound', async (message, bot) => {
+    if (!message.guild) {
+      return message.reply('Command only available in server')
     }
-    if (message.content.split(' ').shift() === '/p') {
-      // Prevent non authorized member to execute command
-      // Only try to join the sender's voice channel if they are in one themselves
-      if (message.member.voice.channel) {
-        const queryTokens = message.content.split(' ')
-        const [media] = bot.mediaManager.getBySearch(queryTokens.slice(1, queryTokens.length).join(' '))
-        if (media) {
-          const connection = await message.member.voice.channel.join()
-          const dispatcher = connection.play(media)
-        } else {
-          message.reply('Media not found :(')
-        }
-      } else {
-        message.reply('You need to join a voice channel first!')
-      }
-    } else if (message.content.split(' ').shift() === '/list') {
-      list(bot, message)
-    } else if (message.content.split(' ').shift() === '/r') {
-      if (message.member.voice.channel) {
-        const randomIndex = Math.trunc(Math.random() * bot.mediaManager.data.length)
-        const media = bot.mediaManager.data[randomIndex]
-        const connection = await message.member.voice.channel.join()
-        const dispatcher = connection.play(media)
-        message.reply(`Playing *${ bot.mediaManager.getFilenameList()[randomIndex] }*`)
-      } else {
-        message.reply('You need to join a voice channel first!')
-      }
+    // Check if message author is in voice channel
+    if (!message.member?.voice.channel) {
+      return message.reply('You need to join a voice channel first!')
+    }
+
+    const queryTokens = message.content.split(' ')
+    const [media] = bot.mediaManager.getBySearch(queryTokens.slice(1, queryTokens.length).join(' '))
+
+    if (media) {
+      const connection = await message.member.voice.channel.join()
+      const dispatcher = connection.play(media)
+    } else {
+      return message.reply('Media not found :(')
     }
   })
+
+  bot.command('random', ['r'], 'Play random sound', async (message, bot) => {
+    if (!message.guild) {
+      return message.reply('Command only available in server')
+    }
+    // Check if message author is in voice channel
+    if (!message.member?.voice.channel) {
+      return message.reply('You need to join a voice channel first!')
+    }
+
+    const randomIndex = Math.trunc(Math.random() * bot.mediaManager.data.length)
+    const media = bot.mediaManager.data[randomIndex]
+    const connection = await message.member.voice.channel.join()
+    const dispatcher = connection.play(media)
+
+    return message.reply(`Playing *${ bot.mediaManager.getFilenameList()[randomIndex] }*`)
+  })
+
 
   bot.discord.on('voiceStateUpdate', (oldMember, newMember) => {
     // If a member disconnect from voice channel
@@ -92,6 +91,10 @@ async function main() {
         connection.disconnect()
       }
     }
+  })
+
+  bot.discord.on('ready', () => {
+    console.log('Discord bot ready!')
   })
 }
 
