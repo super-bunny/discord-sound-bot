@@ -7,6 +7,7 @@ import { getBotOwner } from './utils'
 import listCommand from './commands/list'
 import playCommand from './commands/play'
 import randomCommand from './commands/random'
+import searchCommand from './commands/search'
 
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
@@ -44,6 +45,7 @@ async function main() {
     })
 
   bot.command('list', ['l', 'ls'], 'List playable sounds', listCommand)
+  bot.command('search', ['s'], 'Search sound', searchCommand)
   bot.command('play', ['p'], 'Play specified sound', playCommand)
   bot.command('random', ['r'], 'Play random sound', randomCommand)
 
