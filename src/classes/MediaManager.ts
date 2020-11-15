@@ -11,9 +11,15 @@ export default class MediaManager {
     this.data = mediaPathList
   }
 
-  getBySearch(query: string): string[] {
-    const fuse = new Fuse(this.getFilenameList(), {})
-    return fuse.search(query).map(result => this.data[result.refIndex])
+  getBySearch(query: string): Array<{ score: number, name: string, filepath: string }> {
+    const fuse = new Fuse(this.getFilenameList(), { includeScore: true })
+    const results = fuse.search(query)
+
+    return results.map(result => ({
+      score: result.score,
+      name: result.item,
+      filepath: this.data[result.refIndex],
+    }))
   }
 
   getByFileName(fileNameQuery: string): string {

@@ -15,7 +15,7 @@ export default async function playCommand(message: Message, bot: Bot) {
 
   if (media) {
     const connection = await message.member.voice.channel.join()
-    const dispatcher = connection.play(media)
+    const dispatcher = connection.play(media.filepath)
   } else {
     return message.reply('Media not found :upside_down:')
   }

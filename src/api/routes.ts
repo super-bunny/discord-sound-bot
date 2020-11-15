@@ -33,7 +33,7 @@ export default function (app, bot: Bot, config: ApiConfig) {
       return
     }
     const connection = await channel.join()
-    const dispatcher = connection.play(media)
+    const dispatcher = connection.play(media.filepath)
 
     res.json(responseWrapper(null))
   })
