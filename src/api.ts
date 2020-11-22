@@ -1,6 +1,7 @@
 import express from 'express'
 import routes from './api/routes'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import Bot from './classes/Bot'
 import { ApiConfig } from './types'
 
@@ -8,6 +9,7 @@ export async function start(bot: Bot, config: ApiConfig) {
   const app: express.Application = express()
   const port = process.env.API_PORT || 3000
 
+  app.use(cors())
   app.use(bodyParser.json())
 
   // Authentication middleware
