@@ -6,6 +6,7 @@ import { ApiConfig } from './types'
 
 export async function start(bot: Bot, config: ApiConfig) {
   const app: express.Application = express()
+  const port = process.env.API_PORT || 3000
 
   app.use(bodyParser.json())
 
@@ -24,8 +25,8 @@ export async function start(bot: Bot, config: ApiConfig) {
   // Register routes
   routes(app, bot, config)
 
-  app.listen(3000, function () {
-    console.log('API is listening on port 3000!')
+  app.listen(port, function () {
+    console.log(`API is listening on port ${ port }!`)
   })
 
   return app
