@@ -16,10 +16,10 @@ export async function start(bot: Bot, config: ApiConfig) {
   app.use(function (req, res, next) {
     const authorization = req.headers.authorization
     if (!authorization) {
-      return res.status(403).json({ error: 'No token sent' })
+      return res.status(401).json({ error: 'No token sent' })
     }
     if (!config.tokens.find(token => token.token === authorization)) {
-      return res.status(403).json({ error: 'Token not authorized' })
+      return res.status(401).json({ error: 'Token not authorized' })
     }
     next()
   })
