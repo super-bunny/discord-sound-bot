@@ -35,7 +35,7 @@ export default function (app, bot: Bot, config: ApiConfig) {
     const connection = await channel.join()
     const dispatcher = connection.play(media.filepath)
 
-    res.json(responseWrapper(null))
+    res.json(responseWrapper(media.name))
   })
 
   app.post('/random', async (req, res) => {
@@ -46,11 +46,10 @@ export default function (app, bot: Bot, config: ApiConfig) {
       res.status(404).json(responseWrapper(null, 400, 'Member not found'))
       return
     }
-    const randomIndex = Math.trunc(Math.random() * bot.mediaManager.data.length)
-    const media = bot.mediaManager.data[randomIndex]
+    const media = bot.mediaManager.getRandomMedia()
     const connection = await channel.join()
-    const dispatcher = connection.play(media)
+    const dispatcher = connection.play(media.filepath)
 
-    res.json(responseWrapper(null))
+    res.json(responseWrapper(media.name))
   })
 }
