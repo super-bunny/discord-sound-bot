@@ -54,7 +54,7 @@ async function main() {
     if (oldMember.channelID !== null && oldMember.channelID !== newMember.channelID) {
       const connection = bot.discord.voice.connections.find(connection => connection.channel.id === oldMember.channelID)
       // If last channel member is this bot
-      if (connection && oldMember.channel.members.array().length === 1) {
+      if (connection && oldMember.channel.members.array().every(member => member.user.bot)) {
         connection.disconnect()
       }
     }
