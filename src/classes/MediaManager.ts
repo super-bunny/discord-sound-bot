@@ -11,6 +11,15 @@ export default class MediaManager {
     this.data = mediaPathList
   }
 
+  getRandomMedia(): { name: string, filepath: string } {
+    const randomIndex = Math.trunc(Math.random() * this.data.length)
+
+    return {
+      name: this.getFilenameList()[randomIndex],
+      filepath: this.data[randomIndex],
+    }
+  }
+
   getBySearch(query: string): Array<{ score: number, name: string, filepath: string }> {
     const fuse = new Fuse(this.getFilenameList(), { includeScore: true })
     const results = fuse.search(query)
