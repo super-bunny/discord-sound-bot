@@ -37,4 +37,20 @@ export default function (app, bot: Bot, config: ApiConfig) {
 
     res.json(responseWrapper(null))
   })
+
+  app.post('/random', async (req, res) => {
+    const token = config.tokens.find(token => token.token === req.headers.authorization)
+    const channel = getMemberVoiceChannel(bot.discord,
+      member => member.user.id === token.discordMemberId)
+    if (!channel) {
+      res.status(404).json(responseWrapper(null, 400, 'Member not found'))
+      return
+    }
+    const randomIndex = Math.trunc(Math.random() * bot.mediaManager.data.length)
+    const media = bot.mediaManager.data[randomIndex]
+    const connection = await channel.join()
+    const dispatcher = connection.play(media)
+
+    res.json(responseWrapper(null))
+  })
 }
