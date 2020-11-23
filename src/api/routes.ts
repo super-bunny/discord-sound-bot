@@ -29,7 +29,7 @@ export default function (app, bot: Bot, config: ApiConfig) {
     const channel = getMemberVoiceChannel(bot.discord,
       member => member.user.id === token.discordMemberId)
     if (!channel) {
-      res.status(404).json(responseWrapper(null, 400, 'Member not found'))
+      res.status(404).json(responseWrapper(null, 400, 'Member not connected'))
       return
     }
     const connection = await channel.join()
@@ -43,7 +43,7 @@ export default function (app, bot: Bot, config: ApiConfig) {
     const channel = getMemberVoiceChannel(bot.discord,
       member => member.user.id === token.discordMemberId)
     if (!channel) {
-      res.status(404).json(responseWrapper(null, 400, 'Member not found'))
+      res.status(404).json(responseWrapper(null, 400, 'Member not connected'))
       return
     }
     const media = bot.mediaManager.getRandomMedia()
