@@ -1,9 +1,11 @@
 require('dotenv').config()
 
+import Path from 'path'
+import fs from 'fs'
 import chokidar from 'chokidar'
 import Bot from './classes/Bot'
 import * as env from 'env-var'
-import { getBotOwner } from './utils'
+import { getBotOwner, renameMediaFile } from './utils'
 import listCommand from './commands/list'
 import playCommand from './commands/play'
 import randomCommand from './commands/random'
@@ -26,7 +28,15 @@ async function main() {
     ignoreInitial: true,
     usePolling: true,
   })
-    .on('add', (path) => {
+    .on('add', async (path) => {
+      const newPath = renameMediaFile(path)
+
+      if (path !== newPath) {
+        console.log(`File ${ path.split('/').pop() } added, renaming...`)
+        watcher.unwatch(path)
+        return fs.promises.rename(path, renameMediaFile(path))
+      }
+
       console.log(`File ${ path.split('/').pop() } added, refreshing media list...`)
       bot.mediaManager.refresh()
         .then(() => console.log('Media list refreshed'))
