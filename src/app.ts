@@ -1,6 +1,5 @@
 require('dotenv').config()
 
-import Path from 'path'
 import fs from 'fs'
 import chokidar from 'chokidar'
 import Bot from './classes/Bot'
