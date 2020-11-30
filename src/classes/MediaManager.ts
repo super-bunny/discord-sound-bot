@@ -6,9 +6,8 @@ export default class MediaManager {
   readonly mediaFolderPath: string
   data: string[]
 
-  constructor(mediaPathList: string[], mediaFolderPath: string) {
+  constructor(mediaFolderPath: string) {
     this.mediaFolderPath = mediaFolderPath
-    this.data = mediaPathList
   }
 
   getRandomMedia(): { name: string, filepath: string } {
@@ -42,15 +41,17 @@ export default class MediaManager {
     return this.data.map(filePath => path.basename(filePath, '.' + filePath.split('.').pop()))
   }
 
-  async refresh() {
-    fs.promises.readdir(this.mediaFolderPath)
+  async refresh(): Promise<MediaManager> {
+    return fs.promises.readdir(this.mediaFolderPath)
       .then(files => files.map(file => path.resolve(this.mediaFolderPath, file)))
-      .then(files => this.data = files)
+      .then(files => {
+        this.data = files
+        return this
+      })
   }
 
   static async init(mediaFolderPath): Promise<MediaManager> {
-    return fs.promises.readdir(mediaFolderPath)
-      .then(files => files.map(file => path.resolve(mediaFolderPath, file)))
-      .then(files => new MediaManager(files, mediaFolderPath))
+    return new MediaManager(mediaFolderPath)
+      .refresh()
   }
 }
