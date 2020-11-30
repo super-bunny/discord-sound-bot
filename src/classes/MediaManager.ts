@@ -4,48 +4,44 @@ import Fuse from 'fuse.js'
 
 export default class MediaManager {
   readonly mediaFolderPath: string
-  data: string[]
+  data: Media[]
 
   constructor(mediaFolderPath: string) {
     this.mediaFolderPath = mediaFolderPath
   }
 
-  getRandomMedia(): { name: string, filepath: string } {
-    const randomIndex = Math.trunc(Math.random() * this.data.length)
-
-    return {
-      name: this.getFilenameList()[randomIndex],
-      filepath: this.data[randomIndex],
-    }
+  get filePathList(): string[] {
+    return this.data.map(media => media.filepath)
   }
 
-  getBySearch(query: string): Array<{ score: number, name: string, filepath: string }> {
-    const fuse = new Fuse(this.getFilenameList(), { includeScore: true })
+  getRandomMedia(): Media {
+    const randomIndex = Math.trunc(Math.random() * this.data.length)
+
+    return this.data[randomIndex]
+  }
+
+  getBySearch(query: string): Array<Media & { score: number }> {
+    const fuse = new Fuse(this.data, { keys: ['name'], includeScore: true })
     const results = fuse.search(query)
 
     return results.map(result => ({
+      ...result.item,
       score: result.score,
-      name: result.item,
-      filepath: this.data[result.refIndex],
     }))
   }
 
-  getByFileName(fileNameQuery: string): string {
-    return this.data.find(filePath => {
-      const filename = path.basename(filePath, '.' + filePath.split('.').pop())
-      return filename == fileNameQuery
-    })
-  }
-
   getFilenameList(): string[] {
-    return this.data.map(filePath => path.basename(filePath, '.' + filePath.split('.').pop()))
+    return this.data.map(media => media.name)
   }
 
   async refresh(): Promise<MediaManager> {
     return fs.promises.readdir(this.mediaFolderPath)
-      .then(files => files.map(file => path.resolve(this.mediaFolderPath, file)))
-      .then(files => {
-        this.data = files
+      .then(files => files.map(filename => ({
+        name: filename,
+        filepath: path.resolve(this.mediaFolderPath, filename),
+      })))
+      .then(medias => {
+        this.data = medias
         return this
       })
   }
@@ -55,3 +51,5 @@ export default class MediaManager {
       .refresh()
   }
 }
+
+type Media = { name: string, filepath: string }
