@@ -25,8 +25,8 @@ export default class MediaManager {
   }
 
   getBySearch(query: string): Array<Media & { score: number }> {
-    const fuse = new Fuse(this.data, { keys: ['name'], includeScore: true })
-    const results = fuse.search(query)
+    const fuse = new Fuse(this.data, { keys: ['name'], includeScore: true, useExtendedSearch: true })
+    const results = fuse.search(`${ query } | "${ query }"`)
 
     return results.map(result => ({
       ...result.item,
