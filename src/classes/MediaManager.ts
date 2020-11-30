@@ -37,7 +37,7 @@ export default class MediaManager {
   async refresh(): Promise<MediaManager> {
     return fs.promises.readdir(this.mediaFolderPath)
       .then(files => files.map(filename => ({
-        name: filename,
+        name: path.parse(filename).name,
         filepath: path.resolve(this.mediaFolderPath, filename),
       })))
       .then(medias => {
