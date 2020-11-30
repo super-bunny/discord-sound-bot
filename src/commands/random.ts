@@ -12,5 +12,5 @@ export default async function randomCommand(message, bot) {
   const connection = await message.member.voice.channel.join()
   const dispatcher = connection.play(media)
 
-  return message.reply(`Playing *${ bot.mediaManager.getFilenameList()[randomIndex] }*`)
+  return message.reply(`Playing *${ bot.mediaManager.filenameList[randomIndex] }*`)
 }

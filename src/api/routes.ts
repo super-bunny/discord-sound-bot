@@ -9,7 +9,7 @@ export default function (app, bot: Bot, config: ApiConfig) {
   })
 
   app.get('/sounds', async (req, res) => {
-    const mediaList = bot.mediaManager.getFilenameList()
+    const mediaList = bot.mediaManager.filenameList
     res.json(responseWrapper(mediaList))
   })
 

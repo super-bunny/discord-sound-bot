@@ -10,6 +10,10 @@ export default class MediaManager {
     this.mediaFolderPath = mediaFolderPath
   }
 
+  get filenameList(): string[] {
+    return this.data.map(media => media.name)
+  }
+
   get filePathList(): string[] {
     return this.data.map(media => media.filepath)
   }
@@ -28,10 +32,6 @@ export default class MediaManager {
       ...result.item,
       score: result.score,
     }))
-  }
-
-  getFilenameList(): string[] {
-    return this.data.map(media => media.name)
   }
 
   async refresh(): Promise<MediaManager> {
