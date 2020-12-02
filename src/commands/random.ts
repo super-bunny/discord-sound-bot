@@ -10,7 +10,7 @@ export default async function randomCommand(message, bot) {
   const randomIndex = Math.trunc(Math.random() * bot.mediaManager.data.length)
   const media = bot.mediaManager.data[randomIndex]
   const connection = await message.member.voice.channel.join()
-  const dispatcher = connection.play(media)
+  const dispatcher = connection.play(media.filepath)
 
   return message.reply(`Playing *${ bot.mediaManager.filenameList[randomIndex] }*`)
 }
