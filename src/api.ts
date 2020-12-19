@@ -3,7 +3,7 @@ import routes from './api/routes'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import Bot from './classes/Bot'
-import { ApiConfig } from './types'
+import { ApiConfig } from './classes/Config'
 
 export async function start(bot: Bot, config: ApiConfig) {
   const app: express.Application = express()

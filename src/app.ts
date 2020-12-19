@@ -2,6 +2,7 @@ require('dotenv').config()
 
 import fs from 'fs'
 import chokidar from 'chokidar'
+import Config from './classes/Config'
 import Bot from './classes/Bot'
 import * as env from 'env-var'
 import { getBotOwner, renameMediaFile } from './utils'
@@ -16,9 +17,10 @@ env.get('DISCORD_TOKEN').required().asString()
 env.get('DISCORD_OWNER_ID').required().asString()
 env.get('DISCORD_ROLE_NAME').required().asString()
 
-const config = require(process.env.CONFIG_FILE || '../config.json')
+new Config('').app
 
 async function main() {
+  const config = await Config.fromFile(process.env.CONFIG_FILE || './config.json')
   const bot = await Bot.start(config)
 
   const watcher = chokidar.watch(process.env.MEDIA_FOLDER, {
@@ -76,4 +78,7 @@ async function main() {
 
 main()
   .then()
-  .catch(error => console.error(error))
+  .catch(error => {
+    console.error(error)
+    process.exit(1)
+  })

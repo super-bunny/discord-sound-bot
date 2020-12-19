@@ -1,7 +1,7 @@
 import { responseWrapper } from './ApiUtils'
 import Bot from '../classes/Bot'
 import { getMemberVoiceChannel } from '../utils'
-import { ApiConfig } from '../types'
+import { ApiConfig } from '../classes/Config'
 
 export default function (app, bot: Bot, config: ApiConfig) {
   app.get('/', async (req, res) => {

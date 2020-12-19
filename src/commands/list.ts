@@ -12,7 +12,7 @@ function getFormattedList(list: Array<string>, offset: number, pageSize: number)
 export default function listCommand(message: Message, bot: Bot) {
   const filenameList = bot.mediaManager.filenameList
   const pageParameter = Math.max(0, Number(message.content.split(' ')[1]) - 1) || 0
-  const pageSize = bot.config.listPageSize
+  const pageSize = bot.config.app.listPageSize
   const pageCount = Math.trunc(filenameList.length / pageSize)
   const page = pageParameter > pageCount ? pageCount : pageParameter
 

@@ -2,7 +2,7 @@ import express from 'express'
 import Discord, { Client, Message } from 'discord.js'
 import MediaManager from './MediaManager'
 import Api from '../api'
-import { IConfig } from '../types'
+import Config from './Config'
 
 // ====================
 // Types and interfaces
@@ -19,26 +19,23 @@ export interface ICommand {
 // ====================
 
 export default class Bot {
-  config: IConfig
+  config: Config
   discord: Client
   commands: Array<ICommand> = []
   mediaManager: MediaManager
   api: express.Application
 
-  constructor(discord: Client, mediaManager: MediaManager, config?: IConfig) {
+  constructor(discord: Client, mediaManager: MediaManager, config: Config) {
     this.discord = discord
     this.mediaManager = mediaManager
-    this.config = {
-      listPageSize: 25,
-      ...config,
-    }
+    this.config = config
 
     this.addCommandListener()
   }
 
   private addCommandListener() {
     this.discord.on('message', async (message) => {
-      const commandPrefix = this.config.prefix
+      const commandPrefix = this.config.app.prefix
       const content = message.content
       const commandName = content.slice(commandPrefix.length, content.length).split(' ')[0]
 
@@ -95,7 +92,7 @@ export default class Bot {
     })
   }
 
-  static async start(config?: IConfig): Promise<Bot> {
+  static async start(config: Config): Promise<Bot> {
     const mediaManager = await MediaManager.init(process.env.MEDIA_FOLDER)
     const discord = new Discord.Client()
     await discord.login(process.env.DISCORD_TOKEN)
