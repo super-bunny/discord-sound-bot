@@ -1,3 +1,4 @@
+import { merge } from 'lodash'
 import fs from 'fs'
 
 export default class Config {
@@ -30,7 +31,7 @@ export default class Config {
     const rawConfig = await fs.promises.readFile(this.path)
 
     try {
-      this.config = JSON.parse(rawConfig.toString())
+      this.config = merge(Config.default, JSON.parse(rawConfig.toString()))
     } catch (e) {
       if (overwriteOnError) {
         if (!this.config) {
