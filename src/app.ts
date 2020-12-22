@@ -5,7 +5,7 @@ import chokidar from 'chokidar'
 import Config from './classes/Config'
 import Bot from './classes/Bot'
 import * as env from 'env-var'
-import { getBotOwner, renameMediaFile } from './utils'
+import { renameMediaFile } from './utils'
 import listCommand from './commands/list'
 import playCommand from './commands/play'
 import randomCommand from './commands/random'
@@ -14,14 +14,14 @@ import searchCommand from './commands/search'
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
 env.get('DISCORD_TOKEN').required().asString()
-env.get('DISCORD_OWNER_ID').required().asString()
-env.get('DISCORD_ROLE_NAME').required().asString()
 
 new Config('').app
 
 async function main() {
   const config = await Config.fromFile(process.env.CONFIG_FILE || './config.json')
   const bot = await Bot.start(config)
+
+  Config.check(config.config, true)
 
   const watcher = chokidar.watch(process.env.MEDIA_FOLDER, {
     ignored: /^\./,
@@ -40,16 +40,22 @@ async function main() {
 
       console.log(`File ${ path.split('/').pop() } added, refreshing media list...`)
       bot.mediaManager.refresh()
-        .then(() => console.log('Media list refreshed'))
-        .then(() => getBotOwner(bot.discord))
-        .then(owner => owner.send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
+        .then(() => {
+          console.info('Media list refreshed')
+          bot.getOwner()
+            .then(owner => owner.send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
+            .catch(() => console.warn('Failed to notify bot owner of media list refresh'))
+        })
     })
     .on('unlink', (path) => {
       console.log(`File ${ path.split('/').pop() } removed, refreshing media list...`)
       bot.mediaManager.refresh()
-        .then(() => console.log('Media list refreshed'))
-        .then(() => getBotOwner(bot.discord))
-        .then(owner => owner.send(`:wastebasket: File **${ path.split('/').pop() }** removed. \n:recycle: Media list refreshed`))
+        .then(() => {
+          console.info('Media list refreshed')
+          bot.getOwner()
+            .then(owner => owner.send(`:wastebasket: File **${ path.split('/').pop() }** removed. \n:recycle: Media list refreshed`))
+            .catch(() => console.warn('Failed to notify bot owner of media list refresh'))
+        })
     })
     .on('error', (error) => {
       console.error('Chokidar error happened', error)
