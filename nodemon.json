@@ -4,5 +4,5 @@
   ],
   "ext": ".ts, .js",
   "ignore": [],
-  "exec": "npm run start"
+  "exec": "npm run start:dev"
 }
