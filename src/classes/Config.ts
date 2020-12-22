@@ -53,6 +53,18 @@ export default class Config {
     return JSON.stringify(this.config, null, 4)
   }
 
+  static check(config: RawConfig, printMessage: boolean = false): Boolean {
+    const properties: Array<CheckProperty> = [
+      {
+        message: 'Missing bot owner id in config, some features may not work',
+        check: config => config.app.ownerDiscordId.length > 0,
+      },
+    ]
+    const checkResults = properties.map(property => property.check(config))
+    checkResults.forEach((result, index) => !result && printMessage && console.warn(properties[index].message))
+    return !checkResults.includes(false)
+  }
+
   static async fromFile(path: string, ...args: Parameters<typeof Config.prototype.load>): Promise<Config> {
     const config = new Config(path)
     await config.load(...args)
@@ -78,4 +90,9 @@ export interface ApiConfig {
     token: string
     discordMemberId: string
   }>
+}
+
+interface CheckProperty {
+  message: string
+  check: (config: RawConfig) => boolean
 }

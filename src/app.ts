@@ -21,6 +21,8 @@ async function main() {
   const config = await Config.fromFile(process.env.CONFIG_FILE || './config.json')
   const bot = await Bot.start(config)
 
+  Config.check(config.config, true)
+
   const watcher = chokidar.watch(process.env.MEDIA_FOLDER, {
     ignored: /^\./,
     persistent: true,
