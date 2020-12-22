@@ -14,8 +14,6 @@ import searchCommand from './commands/search'
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
 env.get('DISCORD_TOKEN').required().asString()
-env.get('DISCORD_OWNER_ID').required().asString()
-env.get('DISCORD_ROLE_NAME').required().asString()
 
 new Config('').app
 
@@ -41,14 +39,14 @@ async function main() {
       console.log(`File ${ path.split('/').pop() } added, refreshing media list...`)
       bot.mediaManager.refresh()
         .then(() => console.log('Media list refreshed'))
-        .then(() => getBotOwner(bot.discord))
+        .then(() => getBotOwner(bot))
         .then(owner => owner.send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
     })
     .on('unlink', (path) => {
       console.log(`File ${ path.split('/').pop() } removed, refreshing media list...`)
       bot.mediaManager.refresh()
         .then(() => console.log('Media list refreshed'))
-        .then(() => getBotOwner(bot.discord))
+        .then(() => getBotOwner(bot))
         .then(owner => owner.send(`:wastebasket: File **${ path.split('/').pop() }** removed. \n:recycle: Media list refreshed`))
     })
     .on('error', (error) => {

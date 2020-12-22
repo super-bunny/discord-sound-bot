@@ -6,6 +6,8 @@ export default class Config {
     app: {
       listPageSize: 25,
       prefix: '/',
+      ownerDiscordId: '',
+      roleDiscordName: 'soundbot',
     },
     api: {
       tokens: [],
@@ -65,8 +67,10 @@ export interface RawConfig {
 }
 
 export interface AppConfig {
-  listPageSize: number,
+  listPageSize: number
   prefix: string
+  ownerDiscordId: string
+  roleDiscordName: string
 }
 
 export interface ApiConfig {

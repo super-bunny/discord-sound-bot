@@ -48,7 +48,7 @@ export default class Bot {
         return
       }
       // Check required role if message was posted on a server
-      if (message.guild && !message.member.roles.cache.some(role => role.name === process.env.DISCORD_ROLE_NAME)) {
+      if (message.guild && !message.member.roles.cache.some(role => role.name === this.config.app.roleDiscordName)) {
         return
       }
 
