@@ -8,10 +8,6 @@ export function getMemberVoiceChannel(client: Discord.Client, filter: (member: G
   return channels.find(channel => channel.members.find(filter))
 }
 
-export function getBotOwner(bot: Bot) {
-  return bot.discord.users.fetch(bot.config.app.ownerDiscordId)
-}
-
 export function renameMediaFile(path: string) {
   const parsedPath = Path.parse(path)
   const newName = parsedPath.name

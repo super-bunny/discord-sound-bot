@@ -71,6 +71,10 @@ export default class Bot {
     )
   }
 
+  async getOwner() {
+    return this.discord.users.fetch(this.config.app.ownerDiscordId)
+  }
+
   async startApi(): Promise<void> {
     this.api = await Api.start(this, this.config.api)
   }
