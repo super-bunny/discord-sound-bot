@@ -5,6 +5,7 @@ export default class Config {
   static default: RawConfig = {
     app: {
       listPageSize: 25,
+      listDeleteOriginMessage: false,
       prefix: '/',
       ownerDiscordId: '',
       roleDiscordName: 'soundbot',
@@ -79,6 +80,7 @@ export interface RawConfig {
 
 export interface AppConfig {
   listPageSize: number
+  listDeleteOriginMessage: boolean
   prefix: string
   ownerDiscordId: string
   roleDiscordName: string
