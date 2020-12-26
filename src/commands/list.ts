@@ -32,7 +32,7 @@ function createListMessage(bot: Bot, requestedPage: number, showReactionMsg?: bo
     `*Page ${ page + 1 }/${ pageCount + 1 }*`,
     `*${ pageSize } of ${ filenameList.length } sound(s)*`,
     'Usage : `/list <page_number>`',
-    showReactionMsg && '*Use reactions below to navigate between pages or delete this message for 2mn*',
+    showReactionMsg && '*Use reactions below to navigate between pages or delete this message*',
   ].join('\n')
 }
 
