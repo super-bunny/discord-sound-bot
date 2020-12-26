@@ -5,8 +5,6 @@ const NEXT_EMOJI = '➡'
 const PREVIOUS_EMOJI = '⬅'
 const DELETE_EMOJI = '🗑'
 
-const DELETE_ORIGIN_MESSAGE = true
-
 function getListMessagePage(message: Message): number | null {
   const [_, pageString] = (/Page ([\d]+)\/([\d]+)/g).exec(message.content)
   return Number(pageString) - 1 || null
