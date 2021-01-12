@@ -30,7 +30,7 @@ export default class Config {
     return this.config.api
   }
 
-  async load(overwriteOnError = true): Promise<void> {
+  async load(overwriteOnError = false): Promise<void> {
     try {
       const rawConfig = await fs.promises.readFile(this.path)
       this.config = merge(Config.default, JSON.parse(rawConfig.toString()))

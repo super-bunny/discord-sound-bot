@@ -44,7 +44,7 @@ async function main() {
           console.info('Media list refreshed')
           bot.getOwner()
             .then(owner => owner.send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
-            .catch((error) => console.warn('Failed to notify bot owner of media list refresh', error))
+            .catch((error) => console.warn('Failed to notify bot owner of media list refresh\n', error))
         })
     })
     .on('unlink', (path) => {
@@ -54,7 +54,7 @@ async function main() {
           console.info('Media list refreshed')
           bot.getOwner()
             .then(owner => owner.send(`:wastebasket: File **${ path.split('/').pop() }** removed. \n:recycle: Media list refreshed`))
-            .catch((error) => console.warn('Failed to notify bot owner of media list refresh', error))
+            .catch((error) => console.warn('Failed to notify bot owner of media list refresh\n', error))
         })
     })
     .on('error', (error) => {
