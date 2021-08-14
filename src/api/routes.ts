@@ -9,6 +9,14 @@ export default function (app, bot: Bot, config: ApiConfig) {
   })
 
   app.get('/sounds', async (req, res) => {
+    const search = req.query.search
+
+    if (search) {
+      const mediaList = bot.mediaManager.getBySearch(search).map(media => media.name)
+      res.json(responseWrapper(mediaList))
+      return
+    }
+
     const mediaList = bot.mediaManager.filenameList
     res.json(responseWrapper(mediaList))
   })
