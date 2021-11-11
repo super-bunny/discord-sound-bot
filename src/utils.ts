@@ -1,9 +1,8 @@
 import Discord, { GuildMember } from 'discord.js'
 import Path from 'path'
-import Bot from './classes/Bot'
 
 export function getMemberVoiceChannel(client: Discord.Client, filter: (member: GuildMember) => boolean): Discord.VoiceChannel {
-  const channels = client.channels.cache.array()
+  const channels = (client.channels.cache as any)
     .filter(channel => channel.type === 'voice') as Discord.VoiceChannel[]
   return channels.find(channel => channel.members.find(filter))
 }

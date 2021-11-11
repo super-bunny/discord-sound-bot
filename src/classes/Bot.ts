@@ -1,5 +1,5 @@
 import express from 'express'
-import Discord, { Client, Message } from 'discord.js'
+import Discord, { Client, Intents, Message } from 'discord.js'
 import MediaManager from './MediaManager'
 import Api from '../api'
 import Config from './Config'
@@ -34,7 +34,7 @@ export default class Bot {
   }
 
   private addCommandListener() {
-    this.discord.on('message', async (message) => {
+    this.discord.on('messageCreate', async (message) => {
       const commandPrefix = this.config.app.prefix
       const content = message.content
       const commandName = content.slice(commandPrefix.length, content.length).split(' ')[0]
@@ -98,7 +98,16 @@ export default class Bot {
 
   static async start(config: Config): Promise<Bot> {
     const mediaManager = await MediaManager.init(process.env.MEDIA_FOLDER)
-    const discord = new Discord.Client()
+    const discord = new Discord.Client({
+      intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_VOICE_STATES,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+        Intents.FLAGS.DIRECT_MESSAGES,
+      ],
+      partials: ['CHANNEL'],
+    })
     await discord.login(process.env.DISCORD_TOKEN)
 
     const app = new Bot(discord, mediaManager, config)

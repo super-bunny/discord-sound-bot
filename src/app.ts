@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 import fs from 'fs'
+import { getVoiceConnection } from '@discordjs/voice'
 import chokidar from 'chokidar'
 import Config from './classes/Config'
 import Bot from './classes/Bot'
@@ -43,7 +44,8 @@ async function main() {
         .then(() => {
           console.info('Media list refreshed')
           bot.getOwner()
-            .then(owner => owner.send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
+            .then(owner => owner
+              .send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
             .catch((error) => console.warn('Failed to notify bot owner of media list refresh\n', error))
         })
     })
@@ -68,10 +70,10 @@ async function main() {
 
   bot.discord.on('voiceStateUpdate', (oldMember, newMember) => {
     // If a member disconnect from voice channel
-    if (oldMember.channelID !== null && oldMember.channelID !== newMember.channelID) {
-      const connection = bot.discord.voice.connections.find(connection => connection.channel.id === oldMember.channelID)
+    if (oldMember.channelId !== null && oldMember.channelId !== newMember.channelId) {
+      const connection = getVoiceConnection(oldMember.guild.id)
       // If last channel member is this bot
-      if (connection && oldMember.channel.members.array().every(member => member.user.bot)) {
+      if (connection && oldMember.channel.members.every(member => member.user.bot)) {
         connection.disconnect()
       }
     }
@@ -79,6 +81,10 @@ async function main() {
 
   bot.discord.on('ready', () => {
     console.log('Discord bot ready!')
+  })
+
+  bot.discord.on('error', (error) => {
+    console.error(error)
   })
 }
 

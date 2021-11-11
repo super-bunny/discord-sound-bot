@@ -2,6 +2,7 @@ import { responseWrapper } from './ApiUtils'
 import Bot from '../classes/Bot'
 import { getMemberVoiceChannel } from '../utils'
 import { ApiConfig } from '../classes/Config'
+import { createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice'
 
 export default function (app, bot: Bot, config: ApiConfig) {
   app.get('/', async (req, res) => {
@@ -40,8 +41,15 @@ export default function (app, bot: Bot, config: ApiConfig) {
       res.status(404).json(responseWrapper(null, 400, 'Member not connected'))
       return
     }
-    const connection = await channel.join()
-    const dispatcher = connection.play(media.filepath)
+
+    const connection = joinVoiceChannel({
+      channelId: channel.id,
+      guildId: channel.guild.id,
+      adapterCreator: channel.guild.voiceAdapterCreator,
+    })
+    const player = createAudioPlayer()
+    connection.subscribe(player)
+    player.play(createAudioResource(media.filepath))
 
     res.json(responseWrapper(media.name))
   })
@@ -54,9 +62,16 @@ export default function (app, bot: Bot, config: ApiConfig) {
       res.status(404).json(responseWrapper(null, 400, 'Member not connected'))
       return
     }
+
     const media = bot.mediaManager.getRandomMedia()
-    const connection = await channel.join()
-    const dispatcher = connection.play(media.filepath)
+    const connection = joinVoiceChannel({
+      channelId: channel.id,
+      guildId: channel.guild.id,
+      adapterCreator: channel.guild.voiceAdapterCreator,
+    })
+    const player = createAudioPlayer()
+    connection.subscribe(player)
+    player.play(createAudioResource(media.filepath))
 
     res.json(responseWrapper(media.name))
   })

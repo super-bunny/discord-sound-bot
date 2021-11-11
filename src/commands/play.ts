@@ -1,5 +1,6 @@
 import { Message } from 'discord.js'
 import Bot from '../classes/Bot'
+import { createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice'
 
 export default async function playCommand(message: Message, bot: Bot) {
   if (!message.guild) {
@@ -14,8 +15,14 @@ export default async function playCommand(message: Message, bot: Bot) {
   const [media] = bot.mediaManager.getBySearch(queryTokens.slice(1, queryTokens.length).join(' '))
 
   if (media) {
-    const connection = await message.member.voice.channel.join()
-    const dispatcher = connection.play(media.filepath)
+    const connection = joinVoiceChannel({
+      channelId: message.member.voice.channel.id,
+      guildId: message.member.voice.guild.id,
+      adapterCreator: message.member.voice.guild.voiceAdapterCreator,
+    })
+    const player = createAudioPlayer()
+    connection.subscribe(player)
+    player.play(createAudioResource(media.filepath))
   } else {
     return message.reply('Media not found :upside_down:')
   }

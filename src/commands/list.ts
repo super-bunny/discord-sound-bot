@@ -1,11 +1,11 @@
-import { Message } from 'discord.js'
+import { Message, MessageReaction } from 'discord.js'
 import Bot from '../classes/Bot'
 
 const NEXT_EMOJI = '➡'
 const PREVIOUS_EMOJI = '⬅'
 const DELETE_EMOJI = '🗑'
 
-function getListMessagePage(message: Message): number | null {
+function getListMessagePage(message: MessageReaction['message']): number | null {
   const [_, pageString] = (/Page ([\d]+)\/([\d]+)/g).exec(message.content)
   return Number(pageString) - 1 || null
 }
@@ -40,12 +40,13 @@ export default function listCommand(message: Message, bot: Bot) {
 
   message.reply(listMessage)
     .then(async (replyMessage) => {
-      const collector = replyMessage.createReactionCollector(
-        (reaction, user) => {
-          const filteredEmoji = [PREVIOUS_EMOJI, NEXT_EMOJI, DELETE_EMOJI]
-          return filteredEmoji.includes(reaction.emoji.name) && user.id === message.author.id
+      const collector = replyMessage.createReactionCollector({
+          time: 120000,
+          filter: (reaction, user) => {
+            const filteredEmoji = [PREVIOUS_EMOJI, NEXT_EMOJI, DELETE_EMOJI]
+            return filteredEmoji.includes(reaction.emoji.name) && user.id === message.author.id
+          },
         },
-        { time: 120000 },
       )
 
       collector.on('collect', async (reaction, user) => {
