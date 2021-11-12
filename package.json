@@ -4,10 +4,7 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "start": "node .",
-    "start:dev": "ts-node src/app.ts",
-    "dev": "nodemon",
-    "build": "tsc",
+    "start": "ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -32,8 +29,6 @@
   "devDependencies": {
     "@types/express": "^4.17.8",
     "@types/lodash": "^4.14.165",
-    "@types/node": "^14.6.0",
-    "nodemon": "^2.0.6",
-    "tsc": "^1.20150623.0"
+    "@types/node": "^14.6.0"
   }
 }
