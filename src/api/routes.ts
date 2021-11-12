@@ -18,7 +18,7 @@ export default function (app, bot: Bot, config: ApiConfig) {
       return
     }
 
-    const mediaList = bot.mediaManager.filenameList
+    const mediaList = bot.mediaManager.mediaNameList
     res.json(responseWrapper(mediaList))
   })
 

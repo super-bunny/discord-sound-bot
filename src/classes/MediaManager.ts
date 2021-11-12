@@ -1,31 +1,41 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import Fuse from 'fuse.js'
+import Media from './Media'
 
 export default class MediaManager {
   readonly mediaFolderPath: string
-  data: Media[]
+  medias: Media[]
 
   constructor(mediaFolderPath: string) {
     this.mediaFolderPath = mediaFolderPath
   }
 
+  get mediaNameList(): string[] {
+    return this.medias.map(media => media.name)
+  }
+
   get filenameList(): string[] {
-    return this.data.map(media => media.name)
+    return this.medias.map(media => media.filename)
   }
 
   get filePathList(): string[] {
-    return this.data.map(media => media.filepath)
+    return this.medias.map(media => media.filepath)
   }
 
   getRandomMedia(): Media {
-    const randomIndex = Math.trunc(Math.random() * this.data.length)
+    const randomIndex = Math.trunc(Math.random() * this.medias.length)
 
-    return this.data[randomIndex]
+    return this.medias[randomIndex]
   }
 
   getBySearch(query: string): Array<Media & { score: number }> {
-    const fuse = new Fuse(this.data, { keys: ['name'], includeScore: true, useExtendedSearch: true })
+    const fuse = new Fuse(this.medias, {
+      keys: ['filename'],
+      includeScore: true,
+      useExtendedSearch: true,
+      shouldSort: true,
+    })
     const results = fuse.search(`${ query } | "${ query }"`)
 
     return results.map(result => ({
@@ -36,12 +46,8 @@ export default class MediaManager {
 
   async refresh(): Promise<MediaManager> {
     return fs.promises.readdir(this.mediaFolderPath)
-      .then(files => files.map(filename => ({
-        name: path.parse(filename).name,
-        filepath: path.resolve(this.mediaFolderPath, filename),
-      })))
-      .then(medias => {
-        this.data = medias
+      .then(files => {
+        this.medias = files.map(filename => new Media(path.resolve(this.mediaFolderPath, filename)))
         return this
       })
   }
@@ -51,5 +57,3 @@ export default class MediaManager {
       .refresh()
   }
 }
-
-type Media = { name: string, filepath: string }
