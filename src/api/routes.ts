@@ -1,8 +1,8 @@
 import { responseWrapper } from './ApiUtils'
 import Bot from '../classes/Bot'
-import { getMemberVoiceChannel } from '../utils'
 import { ApiConfig } from '../classes/Config'
 import { createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice'
+import getUserVoiceChannel from '../utils/getUserVoiceChannel'
 
 export default function (app, bot: Bot, config: ApiConfig) {
   app.get('/', async (req, res) => {
@@ -35,8 +35,7 @@ export default function (app, bot: Bot, config: ApiConfig) {
       return
     }
     const token = config.tokens.find(token => token.token === req.headers.authorization)
-    const channel = getMemberVoiceChannel(bot.discord,
-      member => member.user.id === token.discordMemberId)
+    const channel = getUserVoiceChannel(bot.discord, token.discordMemberId)
     if (!channel) {
       res.status(404).json(responseWrapper(null, 400, 'Member not connected'))
       return
@@ -56,8 +55,7 @@ export default function (app, bot: Bot, config: ApiConfig) {
 
   app.post('/random', async (req, res) => {
     const token = config.tokens.find(token => token.token === req.headers.authorization)
-    const channel = getMemberVoiceChannel(bot.discord,
-      member => member.user.id === token.discordMemberId)
+    const channel = getUserVoiceChannel(bot.discord, token.discordMemberId)
     if (!channel) {
       res.status(404).json(responseWrapper(null, 400, 'Member not connected'))
       return
