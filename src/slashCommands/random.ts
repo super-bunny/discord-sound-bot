@@ -1,7 +1,7 @@
 import { ButtonStyle, ComponentType, SlashCommand } from 'slash-create'
 import MediaManager from '../classes/MediaManager'
-import { createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice'
 import { Client } from 'discord.js'
+import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
 
 const REPLAY_BUTTON_ID = 'random_cmd_replay_btn'
 
@@ -43,28 +43,14 @@ export default class RandomCommand extends SlashCommand {
         },
       ],
     })
-      .then(() => ctx.registerComponent(REPLAY_BUTTON_ID, async (btnCtx) => {
-        const connection = joinVoiceChannel({
-          channelId: voiceChannel.id,
-          guildId: ctx.guildID,
-          adapterCreator: guild.voiceAdapterCreator,
+      .then(() => {
+        ctx.registerComponent(REPLAY_BUTTON_ID, async (btnCtx) => {
+          playMediaInVoiceChannel(voiceChannel, media)
+
+          return btnCtx.acknowledge()
         })
-        const player = createAudioPlayer()
+      })
 
-        connection.subscribe(player)
-        player.play(createAudioResource(media.filepath))
-
-        return btnCtx.acknowledge()
-      }))
-
-    const connection = joinVoiceChannel({
-      channelId: voiceChannel.id,
-      guildId: ctx.guildID,
-      adapterCreator: guild.voiceAdapterCreator,
-    })
-    const player = createAudioPlayer()
-
-    connection.subscribe(player)
-    player.play(createAudioResource(media.filepath))
+    playMediaInVoiceChannel(voiceChannel, media)
   }
 }

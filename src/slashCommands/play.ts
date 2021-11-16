@@ -7,8 +7,8 @@ import {
   SlashCommand,
 } from 'slash-create'
 import MediaManager from '../classes/MediaManager'
-import { createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice'
 import { Client } from 'discord.js'
+import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
 
 export interface Options {
   sound: string
@@ -66,28 +66,12 @@ export default class PlayCommand extends SlashCommand {
         ],
       })
         .then(() => ctx.registerComponent(REPLAY_BUTTON_ID, async (btnCtx) => {
-          const connection = joinVoiceChannel({
-            channelId: voiceChannel.id,
-            guildId: ctx.guildID,
-            adapterCreator: guild.voiceAdapterCreator,
-          })
-          const player = createAudioPlayer()
-
-          connection.subscribe(player)
-          player.play(createAudioResource(media.filepath))
+          playMediaInVoiceChannel(voiceChannel, media)
 
           return btnCtx.acknowledge()
         }))
 
-      const connection = joinVoiceChannel({
-        channelId: voiceChannel.id,
-        guildId: ctx.guildID,
-        adapterCreator: guild.voiceAdapterCreator,
-      })
-      const player = createAudioPlayer()
-
-      connection.subscribe(player)
-      player.play(createAudioResource(media.filepath))
+      playMediaInVoiceChannel(voiceChannel, media)
     } else {
       return ctx.send(`No media found for query **${ sound }** :upside_down:`, { ephemeral: true })
     }
