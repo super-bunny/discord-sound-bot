@@ -11,16 +11,23 @@ import { Client } from 'discord.js'
 import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
 
 export interface Options {
+  // Optional alternative command name, default to "play" (useful for command alias)
+  commandName?: string
+  // Optional alternative command description (useful for command alias)
+  commandDescription?: string
+}
+
+export interface SlashCommandOptions {
   sound: string
 }
 
 const REPLAY_BUTTON_ID = 'play_cmd_replay_btn'
 
 export default class PlayCommand extends SlashCommand {
-  constructor(creator, private discord: Client, private mediaManager: MediaManager) {
+  constructor(creator, protected discord: Client, protected mediaManager: MediaManager, options?: Options) {
     super(creator, {
-      name: 'play',
-      description: 'Play a sound in your current voice channel',
+      name: options?.commandName ?? 'play',
+      description: options?.commandDescription ?? 'Play a sound in your current voice channel',
       options: [
         {
           type: CommandOptionType.STRING,
@@ -39,7 +46,7 @@ export default class PlayCommand extends SlashCommand {
     const guild = await this.discord.guilds.fetch(ctx.guildID)
     const member = guild.members.resolve(ctx.member.id)
     const voiceChannel = member.voice.channel
-    const { sound } = ctx.options as Options
+    const { sound } = ctx.options as SlashCommandOptions
 
     // Check if message author is in voice channel
     if (!voiceChannel) {
@@ -79,7 +86,7 @@ export default class PlayCommand extends SlashCommand {
 
 
   async autocomplete(ctx: AutocompleteContext): Promise<Array<AutocompleteChoice>> {
-    const { sound } = ctx.options as Options
+    const { sound } = ctx.options as SlashCommandOptions
 
     return this.mediaManager.getBySearch(sound)
       .slice(0, 25)

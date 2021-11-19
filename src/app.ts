@@ -14,6 +14,7 @@ import RandomCommand from './slashCommands/random'
 import SearchCommand from './slashCommands/search'
 import ListCommand from './slashCommands/list'
 import TokenCommand from './slashCommands/token'
+import PCommand from './slashCommands/alias/p'
 
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
@@ -39,6 +40,7 @@ async function main() {
     ))
     .registerCommands([
       new PlayCommand(creator, bot.discord, bot.mediaManager),
+      new PCommand(creator, bot.discord, bot.mediaManager), // Alias of Play command
       new PingCommand(creator),
       new RandomCommand(creator, bot.discord, bot.mediaManager),
       new SearchCommand(creator, bot.mediaManager),
