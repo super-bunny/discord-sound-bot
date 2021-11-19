@@ -2,9 +2,10 @@
   "name": "discord-soundbox-bot",
   "version": "0.1.0",
   "description": "",
-  "main": "dist/app.js",
+  "type": "module",
+  "exports": "./src/app.js",
   "scripts": {
-    "start": "ts-node src/app.ts",
+    "start": "node --loader ts-node/esm -r dotenv/config --experimental-specifier-resolution=node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,13 +16,13 @@
     "chokidar": "^3.4.3",
     "cors": "^2.8.5",
     "discord.js": "^13.3.1",
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "env-var": "^6.3.0",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.2.7",
     "fuse.js": "^6.4.1",
     "libsodium-wrappers": "^0.7.9",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "slash-create": "^4.3.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"

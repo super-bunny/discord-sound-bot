@@ -1,13 +1,9 @@
 {
   "compilerOptions": {
     "moduleResolution": "Node",
-    "module": "CommonJS",
+    "module": "ESNext",
     "target": "ES2020",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "lib": [
-      "es2019"
-    ],
-    "outDir": "dist"
   }
 }

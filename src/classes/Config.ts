@@ -1,5 +1,5 @@
-import { merge } from 'lodash'
 import fs from 'fs'
+import merge from 'lodash/merge.js'
 
 export default class Config {
   static default: RawConfig = {

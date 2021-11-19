@@ -1,20 +1,18 @@
-require('dotenv').config()
-
-import fs from 'fs'
-import { GatewayServer, SlashCreator } from 'slash-create'
 import { getVoiceConnection } from '@discordjs/voice'
 import chokidar from 'chokidar'
-import Config from './classes/Config'
+import env from 'env-var'
+import fs from 'fs'
+import { GatewayServer, SlashCreator } from 'slash-create'
 import Bot from './classes/Bot'
-import * as env from 'env-var'
-import renameMediaFile from './utils/renameMediaFile'
+import Config from './classes/Config'
+import PCommand from './slashCommands/alias/p'
+import ListCommand from './slashCommands/list'
 import PingCommand from './slashCommands/ping'
 import PlayCommand from './slashCommands/play'
 import RandomCommand from './slashCommands/random'
 import SearchCommand from './slashCommands/search'
-import ListCommand from './slashCommands/list'
 import TokenCommand from './slashCommands/token'
-import PCommand from './slashCommands/alias/p'
+import renameMediaFile from './utils/renameMediaFile'
 
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
