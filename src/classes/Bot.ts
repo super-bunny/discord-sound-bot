@@ -17,11 +17,11 @@ export default class Bot {
   }
 
   async getOwner() {
-    return this.discord.users.fetch(this.config.app.ownerDiscordId)
+    return this.discord.users.fetch(this.config.data.app.ownerDiscordId)
   }
 
   async startApi(): Promise<void> {
-    this.api = await Api.start(this, this.config.api)
+    this.api = await Api.start(this, this.config.data.api)
   }
 
   static async start(config: Config): Promise<Bot> {

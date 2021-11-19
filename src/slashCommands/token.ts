@@ -11,7 +11,7 @@ export default class TokenCommand extends SlashCommand {
 
   async run(ctx) {
     const userId = ctx.user.id
-    const userConfig = this.config.api.tokens
+    const userConfig = this.config.data.api.tokens
       .find(token => token.discordMemberId === userId)
 
     if (!userConfig) {

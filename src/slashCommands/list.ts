@@ -26,7 +26,7 @@ export default class ListCommand extends SlashCommand {
   }
 
   get pageSize(): number {
-    return this.config.app.listPageSize
+    return this.config.data.app.listPageSize
   }
 
   get pageCount(): number {

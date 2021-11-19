@@ -18,12 +18,8 @@ env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
 env.get('DISCORD_TOKEN').required().asString()
 
-new Config('').app
-
 async function main() {
-  const config = await Config.fromFile(process.env.CONFIG_FILE || './config.json')
-
-  Config.check(config.config, true)
+  const config = await Config.init(process.env.CONFIG_FILE || './config.json')
 
   const bot = await Bot.start(config)
 
