@@ -1,6 +1,5 @@
 require('dotenv').config()
 
-import PlayCommand from './slashCommands/play'
 import fs from 'fs'
 import { GatewayServer, SlashCreator } from 'slash-create'
 import { getVoiceConnection } from '@discordjs/voice'
@@ -10,9 +9,11 @@ import Bot from './classes/Bot'
 import * as env from 'env-var'
 import renameMediaFile from './utils/renameMediaFile'
 import PingCommand from './slashCommands/ping'
+import PlayCommand from './slashCommands/play'
 import RandomCommand from './slashCommands/random'
 import SearchCommand from './slashCommands/search'
 import ListCommand from './slashCommands/list'
+import TokenCommand from './slashCommands/token'
 
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
@@ -42,6 +43,7 @@ async function main() {
       new RandomCommand(creator, bot.discord, bot.mediaManager),
       new SearchCommand(creator, bot.mediaManager),
       new ListCommand(creator, bot.mediaManager, config),
+      new TokenCommand(creator, config),
     ])
     .syncCommands() // Sync command with Discord API
     .on('debug', (message) => console.log(message))
