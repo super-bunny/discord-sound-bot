@@ -1,27 +1,56 @@
-require('dotenv').config()
-
-import fs from 'fs'
+import { getVoiceConnection } from '@discordjs/voice'
 import chokidar from 'chokidar'
-import Config from './classes/Config'
+import env from 'env-var'
+import fs from 'fs'
+import { GatewayServer, SlashCreator } from 'slash-create'
 import Bot from './classes/Bot'
-import * as env from 'env-var'
-import { renameMediaFile } from './utils'
-import listCommand from './commands/list'
-import playCommand from './commands/play'
-import randomCommand from './commands/random'
-import searchCommand from './commands/search'
+import Config from './classes/Config'
+import PCommand from './slashCommands/alias/p'
+import ListCommand from './slashCommands/list'
+import PingCommand from './slashCommands/ping'
+import PlayCommand from './slashCommands/play'
+import RandomCommand from './slashCommands/random'
+import SearchCommand from './slashCommands/search'
+import TokenCommand from './slashCommands/token'
+import renameMediaFile from './utils/renameMediaFile'
 
 env.get('CONFIG_FILE').asUrlString
 env.get('MEDIA_FOLDER').required().asString()
 env.get('DISCORD_TOKEN').required().asString()
 
-new Config('').app
-
 async function main() {
-  const config = await Config.fromFile(process.env.CONFIG_FILE || './config.json')
+  const config = await Config.init(process.env.CONFIG_FILE || './config.json')
+
   const bot = await Bot.start(config)
 
-  Config.check(config.config, true)
+  const creator = new SlashCreator({
+    applicationID: process.env.DISCORD_APP_ID,
+    publicKey: process.env.DISCORD_PUBLIC_KEY,
+    token: process.env.DISCORD_TOKEN,
+  })
+  creator
+    .withServer(new GatewayServer(
+      (handler) => bot.discord.ws.on('INTERACTION_CREATE', handler),
+    ))
+    .registerCommands([
+      new PlayCommand(creator, bot.discord, bot.mediaManager),
+      new PCommand(creator, bot.discord, bot.mediaManager), // Alias of Play command
+      new PingCommand(creator),
+      new RandomCommand(creator, bot.discord, bot.mediaManager),
+      new SearchCommand(creator, bot.mediaManager),
+      new ListCommand(creator, bot.mediaManager, config),
+      new TokenCommand(creator, config),
+    ])
+    .syncCommands() // Sync command with Discord API
+    .on('debug', (message) => console.log(message))
+    .on('warn', (message) => console.warn(message))
+    .on('error', (error) => console.error(error))
+    .on('synced', () => console.info('Commands synced!'))
+    .on('commandRun', (command, _, ctx) =>
+      console.info(`${ ctx.user.username }#${ ctx.user.discriminator } (${ ctx.user.id }) ran command ${ command.commandName }`))
+    .on('commandRegister', (command) =>
+      console.info(`Registered command ${ command.commandName }`))
+    .on('commandError', (command, error) => console.error(`Command ${ command.commandName }:`, error))
 
   const watcher = chokidar.watch(process.env.MEDIA_FOLDER, {
     ignored: /^\./,
@@ -43,8 +72,9 @@ async function main() {
         .then(() => {
           console.info('Media list refreshed')
           bot.getOwner()
-            .then(owner => owner.send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
-            .catch(() => console.warn('Failed to notify bot owner of media list refresh'))
+            .then(owner => owner
+              .send(`:new: File **${ path.split('/').pop() }** added. \n:recycle: Media list refreshed`))
+            .catch((error) => console.warn('Failed to notify bot owner of media list refresh\n', error))
         })
     })
     .on('unlink', (path) => {
@@ -54,24 +84,19 @@ async function main() {
           console.info('Media list refreshed')
           bot.getOwner()
             .then(owner => owner.send(`:wastebasket: File **${ path.split('/').pop() }** removed. \n:recycle: Media list refreshed`))
-            .catch(() => console.warn('Failed to notify bot owner of media list refresh'))
+            .catch((error) => console.warn('Failed to notify bot owner of media list refresh\n', error))
         })
     })
     .on('error', (error) => {
       console.error('Chokidar error happened', error)
     })
 
-  bot.command('list', ['l', 'ls'], 'List playable sounds', listCommand)
-  bot.command('search', ['s'], 'Search sound', searchCommand)
-  bot.command('play', ['p'], 'Play specified sound', playCommand)
-  bot.command('random', ['r'], 'Play random sound', randomCommand)
-
   bot.discord.on('voiceStateUpdate', (oldMember, newMember) => {
     // If a member disconnect from voice channel
-    if (oldMember.channelID !== null && oldMember.channelID !== newMember.channelID) {
-      const connection = bot.discord.voice.connections.find(connection => connection.channel.id === oldMember.channelID)
+    if (oldMember.channelId !== null && oldMember.channelId !== newMember.channelId) {
+      const connection = getVoiceConnection(oldMember.guild.id)
       // If last channel member is this bot
-      if (connection && oldMember.channel.members.array().every(member => member.user.bot)) {
+      if (connection && oldMember.channel.members.every(member => member.user.bot)) {
         connection.disconnect()
       }
     }
@@ -79,6 +104,10 @@ async function main() {
 
   bot.discord.on('ready', () => {
     console.log('Discord bot ready!')
+  })
+
+  bot.discord.on('error', (error) => {
+    console.error(error)
   })
 }
 
