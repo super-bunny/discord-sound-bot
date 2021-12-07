@@ -34,7 +34,7 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
     const [media] = bot.mediaManager.getBySearch(mediaName)
 
     if (!media) {
-      res.status(404).json(responseWrapper(null, 400, 'Media not found'))
+      res.status(404).json(responseWrapper(null, 404, 'Media not found'))
       return
     }
 
@@ -48,7 +48,7 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
     const channel = getUserVoiceChannel(bot.discord, token.discordMemberId)
 
     if (!channel) {
-      res.status(404).json(responseWrapper(null, 400, 'Member not connected'))
+      res.status(404).json(responseWrapper(null, 404, 'Member not connected'))
       return
     }
 
@@ -75,7 +75,7 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
     const channel = getUserVoiceChannel(bot.discord, token.discordMemberId)
 
     if (!channel) {
-      res.status(404).json(responseWrapper(null, 400, 'Member not connected'))
+      res.status(404).json(responseWrapper(null, 404, 'Member not connected'))
       return
     }
 
