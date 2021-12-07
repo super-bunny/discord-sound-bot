@@ -1,24 +1,24 @@
-import { ButtonStyle, ComponentType, SlashCommand } from 'slash-create'
-import MediaManager from '../classes/MediaManager'
 import { Client } from 'discord.js'
+import { ButtonStyle, CommandContext, ComponentType, SlashCommand, SlashCreator } from 'slash-create'
+import MediaManager from '../classes/MediaManager'
 import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
 
 const REPLAY_BUTTON_ID = 'random_cmd_replay_btn'
 
 export default class RandomCommand extends SlashCommand {
-  constructor(creator, private discord: Client, private mediaManager: MediaManager) {
+  constructor(creator: SlashCreator, private discord: Client, private mediaManager: MediaManager) {
     super(creator, {
       name: 'random',
       description: 'Play a random sound in your current voice channel',
     })
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
     await ctx.defer(true)
 
-    const guild = await this.discord.guilds.fetch(ctx.guildID)
-    const member = guild.members.resolve(ctx.member.id)
-    const voiceChannel = member.voice.channel
+    const guild = await this.discord.guilds.fetch(ctx.guildID!)
+    const member = guild.members.resolve(ctx.member!.id)
+    const voiceChannel = member!.voice.channel
 
     // Check if message author is in voice channel
     if (!voiceChannel) {

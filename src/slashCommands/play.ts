@@ -1,13 +1,15 @@
+import { Client } from 'discord.js'
 import {
   AutocompleteChoice,
   AutocompleteContext,
   ButtonStyle,
+  CommandContext,
   CommandOptionType,
   ComponentType,
   SlashCommand,
+  SlashCreator,
 } from 'slash-create'
 import MediaManager from '../classes/MediaManager'
-import { Client } from 'discord.js'
 import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
 
 export interface Options {
@@ -24,7 +26,12 @@ export interface SlashCommandOptions {
 const REPLAY_BUTTON_ID = 'play_cmd_replay_btn'
 
 export default class PlayCommand extends SlashCommand {
-  constructor(creator, protected discord: Client, protected mediaManager: MediaManager, options?: Options) {
+  constructor(
+    creator: SlashCreator,
+    protected discord: Client,
+    protected mediaManager: MediaManager,
+    options?: Options,
+  ) {
     super(creator, {
       name: options?.commandName ?? 'play',
       description: options?.commandDescription ?? 'Play a sound in your current voice channel',
@@ -40,12 +47,12 @@ export default class PlayCommand extends SlashCommand {
     })
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
     await ctx.defer(true)
 
-    const guild = await this.discord.guilds.fetch(ctx.guildID)
-    const member = guild.members.resolve(ctx.member.id)
-    const voiceChannel = member.voice.channel
+    const guild = await this.discord.guilds.fetch(ctx.guildID!)
+    const member = guild.members.resolve(ctx.member!.id)
+    const voiceChannel = member!.voice.channel
     const { sound } = ctx.options as SlashCommandOptions
 
     // Check if message author is in voice channel

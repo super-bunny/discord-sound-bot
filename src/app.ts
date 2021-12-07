@@ -14,19 +14,15 @@ import SearchCommand from './slashCommands/search'
 import TokenCommand from './slashCommands/token'
 import renameMediaFile from './utils/renameMediaFile'
 
-env.get('CONFIG_FILE').asUrlString
-env.get('MEDIA_FOLDER').required().asString()
-env.get('DISCORD_TOKEN').required().asString()
-
 async function main() {
-  const config = await Config.init(process.env.CONFIG_FILE || './config.json')
+  const config = await Config.init(env.get('CONFIG_FILE').asUrlString() || './config.json')
 
   const bot = await Bot.start(config)
 
   const creator = new SlashCreator({
-    applicationID: process.env.DISCORD_APP_ID,
-    publicKey: process.env.DISCORD_PUBLIC_KEY,
-    token: process.env.DISCORD_TOKEN,
+    applicationID: env.get('DISCORD_APP_ID').required().asString(),
+    publicKey: env.get('DISCORD_PUBLIC_KEY').required().asString(),
+    token: env.get('DISCORD_TOKEN').required().asString(),
   })
   creator
     .withServer(new GatewayServer(
@@ -52,7 +48,7 @@ async function main() {
       console.info(`Registered command ${ command.commandName }`))
     .on('commandError', (command, error) => console.error(`Command ${ command.commandName }:`, error))
 
-  const watcher = chokidar.watch(process.env.MEDIA_FOLDER, {
+  const watcher = chokidar.watch(env.get('MEDIA_FOLDER').required().asString(), {
     ignored: /^\./,
     persistent: true,
     ignoreInitial: true,
@@ -96,7 +92,7 @@ async function main() {
     if (oldMember.channelId !== null && oldMember.channelId !== newMember.channelId) {
       const connection = getVoiceConnection(oldMember.guild.id)
       // If last channel member is this bot
-      if (connection && oldMember.channel.members.every(member => member.user.bot)) {
+      if (connection && oldMember.channel?.members.every(member => member.user.bot)) {
         connection.disconnect()
       }
     }

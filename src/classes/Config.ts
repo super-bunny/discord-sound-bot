@@ -32,6 +32,9 @@ export default class Config extends Low<RawConfig> {
 
   readonly path: string
 
+  // Override Lowdb data property to make it non nullable
+  data: RawConfig
+
   constructor(path: string) {
     const adapter = new JSONFile<RawConfig>(path)
     super(adapter)

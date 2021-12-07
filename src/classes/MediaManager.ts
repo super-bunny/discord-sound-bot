@@ -1,11 +1,11 @@
 import * as fs from 'fs'
-import * as path from 'path'
 import Fuse from 'fuse.js'
+import * as path from 'path'
 import Media from './Media'
 
 export default class MediaManager {
   readonly mediaFolderPath: string
-  medias: Media[]
+  medias: Media[] = []
 
   constructor(mediaFolderPath: string) {
     this.mediaFolderPath = mediaFolderPath
@@ -40,7 +40,7 @@ export default class MediaManager {
 
     return results.map(result => ({
       ...result.item,
-      score: result.score,
+      score: result.score!,
     }))
   }
 
@@ -52,7 +52,7 @@ export default class MediaManager {
       })
   }
 
-  static async init(mediaFolderPath): Promise<MediaManager> {
+  static async init(mediaFolderPath: string): Promise<MediaManager> {
     return new MediaManager(mediaFolderPath)
       .refresh()
   }

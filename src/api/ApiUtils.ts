@@ -1,6 +1,6 @@
 import http from 'http'
 
-export function responseWrapper(data: Object | any[], code: number = 200, message?: string) {
+export function responseWrapper(data: Object | any[] | null, code: number = 200, message?: string) {
   const _code = http.STATUS_CODES[code] ? code : 500
 
   return {

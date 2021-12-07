@@ -1,3 +1,4 @@
+import env from 'env-var'
 import express from 'express'
 import Discord, { Client, Intents } from 'discord.js'
 import MediaManager from './MediaManager'
@@ -8,7 +9,7 @@ export default class Bot {
   config: Config
   discord: Client
   mediaManager: MediaManager
-  api: express.Application
+  api?: express.Application
 
   constructor(discord: Client, mediaManager: MediaManager, config: Config) {
     this.discord = discord
@@ -25,7 +26,7 @@ export default class Bot {
   }
 
   static async start(config: Config): Promise<Bot> {
-    const mediaManager = await MediaManager.init(process.env.MEDIA_FOLDER)
+    const mediaManager = await MediaManager.init(env.get('MEDIA_FOLDER').required().asString())
     const discord = new Discord.Client({
       intents: [
         Intents.FLAGS.GUILDS,
