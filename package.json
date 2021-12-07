@@ -11,7 +11,7 @@
   "author": "",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
-    "@discordjs/voice": "0.7.2",
+    "@discordjs/voice": "^0.7.5",
     "body-parser": "^1.19.0",
     "chokidar": "^3.4.3",
     "cors": "^2.8.5",
