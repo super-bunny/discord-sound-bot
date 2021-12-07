@@ -5,7 +5,6 @@ import fs from 'fs'
 import { GatewayServer, SlashCreator } from 'slash-create'
 import Bot from './classes/Bot'
 import Config from './classes/Config'
-import PCommand from './slashCommands/alias/p'
 import ListCommand from './slashCommands/list'
 import PingCommand from './slashCommands/ping'
 import PlayCommand from './slashCommands/play'
@@ -30,7 +29,10 @@ async function main() {
     ))
     .registerCommands([
       new PlayCommand(creator, bot.discord, bot.mediaManager),
-      new PCommand(creator, bot.discord, bot.mediaManager), // Alias of Play command
+      new PlayCommand(creator, bot.discord, bot.mediaManager, {
+        commandName: 'p',
+        commandDescription: 'Alias for play command',
+      }),
       new PingCommand(creator),
       new RandomCommand(creator, bot.discord, bot.mediaManager),
       new SearchCommand(creator, bot.mediaManager),
