@@ -11,11 +11,13 @@ export interface AppConfig {
   roleDiscordName: string
 }
 
+export type ApiConfigToken = {
+  token: string
+  discordMemberId: string
+}
+
 export interface ApiConfig {
-  tokens: Array<{
-    token: string
-    discordMemberId: string
-  }>
+  tokens: Array<ApiConfigToken>
 }
 
 export default class Config extends Low<RawConfig> {
