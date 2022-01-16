@@ -1,5 +1,6 @@
 import { createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice'
-import { Application } from 'express'
+import { Application, Response } from 'express'
+import { ResponseLocals } from '../api.js'
 import Bot from '../classes/Bot'
 import { ApiConfig } from '../classes/Config'
 import getUserVoiceChannel from '../utils/getUserVoiceChannel'
@@ -10,7 +11,7 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
     res.json(responseWrapper('Hello World!'))
   })
 
-  app.get('/sounds', async (req, res) => {
+  app.get('/sounds', async (req, res: Response<any, ResponseLocals>) => {
     const search = req.query.search
 
     if (typeof search === 'string') {
@@ -23,7 +24,7 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
     res.json(responseWrapper(mediaList))
   })
 
-  app.post('/play', async (req, res) => {
+  app.post('/play', async (req, res: Response<any, ResponseLocals>) => {
     const mediaName = req.body.name
 
     if (!mediaName) {
@@ -38,14 +39,9 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
       return
     }
 
-    const token = config.tokens.find(token => token.token === req.headers.authorization)
+    const tokenData = res.locals.tokenData!
 
-    if (!token) {
-      res.status(401).json(responseWrapper(null, 401, 'Not authorized'))
-      return
-    }
-
-    const channel = getUserVoiceChannel(bot.discord, token.discordMemberId)
+    const channel = getUserVoiceChannel(bot.discord, tokenData.discordMemberId)
 
     if (!channel) {
       res.status(404).json(responseWrapper(null, 404, 'Member not connected'))
@@ -64,15 +60,10 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
     res.json(responseWrapper(media.name))
   })
 
-  app.post('/random', async (req, res) => {
-    const token = config.tokens.find(token => token.token === req.headers.authorization)
+  app.post('/random', async (req, res: Response<any, ResponseLocals>) => {
+    const tokenData = res.locals.tokenData!
 
-    if (!token) {
-      res.status(401).json(responseWrapper(null, 401, 'Not authorized'))
-      return
-    }
-
-    const channel = getUserVoiceChannel(bot.discord, token.discordMemberId)
+    const channel = getUserVoiceChannel(bot.discord, tokenData.discordMemberId)
 
     if (!channel) {
       res.status(404).json(responseWrapper(null, 404, 'Member not connected'))
