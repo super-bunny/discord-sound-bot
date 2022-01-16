@@ -1,5 +1,6 @@
 import { createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice'
 import { Application, Response } from 'express'
+import { createReadStream } from 'fs'
 import { ResponseLocals } from '../api.js'
 import Bot from '../classes/Bot'
 import { ApiConfig } from '../classes/Config'
@@ -22,6 +23,19 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
 
     const mediaList = bot.mediaManager.mediaNameList
     res.json(responseWrapper(mediaList))
+  })
+
+
+  app.get('/stream/:soundName', async (req, res: Response<any, ResponseLocals>) => {
+    const soundName = req.params.soundName
+
+    const media = bot.mediaManager.medias.find(media => media.name === soundName)
+
+    if (!media) {
+      return res.status(404).json(responseWrapper(null, 404, 'Media not found'))
+    }
+
+    return createReadStream(media.filepath).pipe(res)
   })
 
   app.post('/play', async (req, res: Response<any, ResponseLocals>) => {
