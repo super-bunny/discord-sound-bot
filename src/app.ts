@@ -39,7 +39,7 @@ async function main() {
       new ListCommand(creator, bot.mediaManager, config),
       new TokenCommand(creator, config),
     ])
-    .syncCommands() // Sync command with Discord API
+    .syncCommands({ deleteCommands: true }) // Sync command with Discord API
     .on('debug', (message) => console.log(message))
     .on('warn', (message) => console.warn(message))
     .on('error', (error) => console.error(error))
