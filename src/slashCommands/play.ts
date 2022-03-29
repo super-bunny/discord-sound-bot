@@ -12,13 +12,6 @@ import {
 import MediaManager from '../classes/MediaManager'
 import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
 
-export interface Options {
-  // Optional alternative command name, default to "play" (useful for command alias)
-  commandName?: string
-  // Optional alternative command description (useful for command alias)
-  commandDescription?: string
-}
-
 export interface SlashCommandOptions {
   sound: string
 }
@@ -30,11 +23,10 @@ export default class PlayCommand extends SlashCommand {
     creator: SlashCreator,
     protected discord: Client,
     protected mediaManager: MediaManager,
-    options?: Options,
   ) {
     super(creator, {
-      name: options?.commandName ?? 'play',
-      description: options?.commandDescription ?? 'Play a sound in your current voice channel',
+      name: 'play',
+      description: 'Play a sound in your current voice channel',
       options: [
         {
           type: CommandOptionType.STRING,

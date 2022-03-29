@@ -29,10 +29,6 @@ async function main() {
     ))
     .registerCommands([
       new PlayCommand(creator, bot.discord, bot.mediaManager),
-      new PlayCommand(creator, bot.discord, bot.mediaManager, {
-        commandName: 'p',
-        commandDescription: 'Alias for play command',
-      }),
       new PingCommand(creator),
       new RandomCommand(creator, bot.discord, bot.mediaManager),
       new SearchCommand(creator, bot.mediaManager),
