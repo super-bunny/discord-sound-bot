@@ -1,24 +1,5 @@
 import { JSONFile, Low } from 'lowdb'
-
-export interface RawConfig {
-  app: AppConfig
-  api: ApiConfig
-}
-
-export interface AppConfig {
-  listPageSize: number
-  ownerDiscordId: string
-  roleDiscordName: string
-}
-
-export type ApiConfigToken = {
-  token: string
-  discordMemberId: string
-}
-
-export interface ApiConfig {
-  tokens: Array<ApiConfigToken>
-}
+import { RawConfig } from '../types/Config'
 
 export default class Config extends Low<RawConfig> {
   static defaultConfig: RawConfig = {

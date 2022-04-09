@@ -4,7 +4,7 @@ import cors from 'cors'
 import express, { CookieOptions, Response } from 'express'
 import routes from './api/routes'
 import Bot from './classes/Bot'
-import { ApiConfig, ApiConfigToken } from './classes/Config'
+import { ApiConfig, ApiConfigToken } from './types/Config'
 
 export interface ResponseLocals {
   tokenData?: ApiConfigToken
