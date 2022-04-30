@@ -1,32 +1,39 @@
-import { Client } from 'discord.js'
+import { Client, StageChannel, VoiceChannel } from 'discord.js'
 import {
   AutocompleteChoice,
   AutocompleteContext,
   ButtonStyle,
   CommandContext,
   CommandOptionType,
+  ComponentContext,
   ComponentType,
-  SlashCommand,
   SlashCreator,
 } from 'slash-create'
 import MediaManager from '../classes/MediaManager'
 import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
+import EnhancedSlashCommand, { EnhancedSlashCommandOptions } from '../classes/EnhancedSlashCommand'
+import Media from '../classes/Media'
 
 export interface SlashCommandOptions {
   sound: string
 }
 
+export type PlayCommandOptions = Pick<EnhancedSlashCommandOptions, 'throttling' | 'throttleCache'>
+
 const REPLAY_BUTTON_ID = 'play_cmd_replay_btn'
 
-export default class PlayCommand extends SlashCommand {
+export default class PlayCommand extends EnhancedSlashCommand {
   constructor(
     creator: SlashCreator,
     protected discord: Client,
     protected mediaManager: MediaManager,
+    options?: PlayCommandOptions,
   ) {
     super(creator, {
       name: 'play',
       description: 'Play a sound in your current voice channel',
+      throttling: options?.throttling,
+      throttleCache: options?.throttleCache,
       options: [
         {
           type: CommandOptionType.STRING,
@@ -71,11 +78,9 @@ export default class PlayCommand extends SlashCommand {
           },
         ],
       })
-        .then(() => ctx.registerComponent(REPLAY_BUTTON_ID, async (btnCtx) => {
-          playMediaInVoiceChannel(voiceChannel, media)
-
-          return btnCtx.acknowledge()
-        }))
+        .then(() => ctx.registerComponent(
+          REPLAY_BUTTON_ID, (btnCtx) => this.replayButtonHandler(btnCtx, voiceChannel, media)),
+        )
 
       playMediaInVoiceChannel(voiceChannel, media)
     } else {
@@ -90,5 +95,22 @@ export default class PlayCommand extends SlashCommand {
     return this.mediaManager.getBySearch(sound)
       .slice(0, 25)
       .map(({ name, filename }): AutocompleteChoice => ({ name, value: filename }))
+  }
+
+  async replayButtonHandler(buttonCtx: ComponentContext, voiceChannel: VoiceChannel | StageChannel, media: Media) {
+    const memberId = buttonCtx.member!.id
+
+    if (this.throttler?.isThrottled(memberId)) {
+      this.onBlock(buttonCtx as any, 'throttling', {
+        throttle: this.throttleCache,
+        remaining: this.throttler!.getRemainingDuration(memberId)! / 1000,
+      })
+      return buttonCtx.acknowledge()
+    }
+
+    playMediaInVoiceChannel(voiceChannel, media)
+    this.throttler?.registerUsage(memberId)
+
+    return buttonCtx.acknowledge()
   }
 }

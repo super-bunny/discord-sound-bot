@@ -3,9 +3,9 @@ import { Application, Response } from 'express'
 import { createReadStream } from 'fs'
 import { ResponseLocals } from '../api.js'
 import Bot from '../classes/Bot'
-import { ApiConfig } from '../classes/Config'
 import getUserVoiceChannel from '../utils/getUserVoiceChannel'
 import { responseWrapper } from './ApiUtils'
+import { ApiConfig } from '../types/Config'
 
 export default function (app: Application, bot: Bot, config: ApiConfig) {
   app.get('/', async (req, res) => {
@@ -62,6 +62,15 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
       return
     }
 
+    const commandThrottler = bot.cache.throttles.play
+    if (commandThrottler?.isThrottled(tokenData.discordMemberId)) {
+      res.status(429).json(responseWrapper(null, 404,
+        `Member is throttled for ${ commandThrottler?.getRemainingDuration(tokenData.discordMemberId)! / 1000 }s`))
+      return
+    }
+
+    commandThrottler?.registerUsage(tokenData.discordMemberId)
+
     const connection = joinVoiceChannel({
       channelId: channel.id,
       guildId: channel.guild.id,
@@ -70,6 +79,7 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
     const player = createAudioPlayer()
     connection.subscribe(player)
     player.play(createAudioResource(media.filepath))
+
 
     res.json(responseWrapper(media.name))
   })
@@ -83,6 +93,15 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
       res.status(404).json(responseWrapper(null, 404, 'Member not connected'))
       return
     }
+
+    const commandThrottler = bot.cache.throttles.random
+    if (commandThrottler?.isThrottled(tokenData.discordMemberId)) {
+      res.status(429).json(responseWrapper(null, 404,
+        `Member is throttled for ${ commandThrottler?.getRemainingDuration(tokenData.discordMemberId)! / 1000 }s`))
+      return
+    }
+
+    commandThrottler?.registerUsage(tokenData.discordMemberId)
 
     const media = bot.mediaManager.getRandomMedia()
     const connection = joinVoiceChannel({

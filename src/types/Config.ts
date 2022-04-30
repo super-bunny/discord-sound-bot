@@ -7,7 +7,7 @@ export interface CommandThrottlingOptions {
   duration: number,
 }
 
-export type ThrottleAllowedCommands = Extract<CommandNames, CommandNames.PLAY | CommandNames.RANDOM>
+export type ThrottleAllowedCommands = CommandNames.PLAY | CommandNames.RANDOM
 
 export interface AppConfig {
   listPageSize: number

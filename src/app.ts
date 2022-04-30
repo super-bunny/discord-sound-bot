@@ -28,9 +28,15 @@ async function main() {
       (handler) => bot.discord.ws.on('INTERACTION_CREATE', handler),
     ))
     .registerCommands([
-      new PlayCommand(creator, bot.discord, bot.mediaManager),
       new PingCommand(creator),
-      new RandomCommand(creator, bot.discord, bot.mediaManager),
+      new PlayCommand(creator, bot.discord, bot.mediaManager, {
+        throttling: config.data.app.commandThrottling?.play,
+        throttleCache: bot.cache.throttles.play?.cache,
+      }),
+      new RandomCommand(creator, bot.discord, bot.mediaManager, {
+        throttling: config.data.app.commandThrottling?.random,
+        throttleCache: bot.cache.throttles.random?.cache,
+      }),
       new SearchCommand(creator, bot.mediaManager),
       new ListCommand(creator, bot.mediaManager, config),
       new TokenCommand(creator, config),

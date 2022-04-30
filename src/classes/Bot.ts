@@ -4,17 +4,33 @@ import Discord, { Client, Intents } from 'discord.js'
 import MediaManager from './MediaManager'
 import Api from '../api'
 import Config from './Config'
+import Cache from '../types/Cache'
+import Throttler from './Throttler'
 
 export default class Bot {
   config: Config
   discord: Client
   mediaManager: MediaManager
   api?: express.Application
+  cache: Cache
 
   constructor(discord: Client, mediaManager: MediaManager, config: Config) {
     this.discord = discord
     this.mediaManager = mediaManager
     this.config = config
+    this.cache = this.getInitialCache()
+  }
+
+  // Initialize and return cache instance
+  protected getInitialCache(): Cache {
+    const { play, random } = this.config.data.app.commandThrottling ?? {}
+
+    return {
+      throttles: {
+        play: play ? new Throttler(play.usages, play.duration) : undefined,
+        random: random ? new Throttler(random.usages, random.duration) : undefined,
+      },
+    }
   }
 
   async getOwner() {
