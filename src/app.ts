@@ -17,7 +17,7 @@ import printAppEnv from './utils/printAppEnv'
 async function main() {
   printAppEnv()
 
-  const config = await Config.init(env.get('CONFIG_FILE').asUrlString() || './config.json')
+  const config = await Config.init(env.get('CONFIG_FILE').asString() || './config.json')
 
   const bot = await Bot.start(config)
 
