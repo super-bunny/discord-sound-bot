@@ -25,9 +25,9 @@ export default class RandomCommand extends EnhancedSlashCommand {
   }
 
   async run(ctx: CommandContext) {
-    console.log('this.throttling:', this.throttling)
     await ctx.defer(true)
 
+    const memberId = ctx.member!.id
     const guild = await this.discord.guilds.fetch(ctx.guildID!)
     const member = guild.members.resolve(ctx.member!.id)
     const voiceChannel = member!.voice.channel
@@ -59,6 +59,7 @@ export default class RandomCommand extends EnhancedSlashCommand {
         REPLAY_BUTTON_ID, (btnCtx) => this.replayButtonHandler(btnCtx, voiceChannel, media)),
       )
 
+    this.throttler?.registerUsage(memberId)
     playMediaInVoiceChannel(voiceChannel, media)
   }
 

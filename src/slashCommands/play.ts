@@ -49,8 +49,9 @@ export default class PlayCommand extends EnhancedSlashCommand {
   async run(ctx: CommandContext) {
     await ctx.defer(true)
 
+    const memberId = ctx.member!.id
     const guild = await this.discord.guilds.fetch(ctx.guildID!)
-    const member = guild.members.resolve(ctx.member!.id)
+    const member = guild.members.resolve(memberId)
     const voiceChannel = member!.voice.channel
     const { sound } = ctx.options as SlashCommandOptions
 
@@ -82,6 +83,7 @@ export default class PlayCommand extends EnhancedSlashCommand {
           REPLAY_BUTTON_ID, (btnCtx) => this.replayButtonHandler(btnCtx, voiceChannel, media)),
         )
 
+      this.throttler?.registerUsage(memberId)
       playMediaInVoiceChannel(voiceChannel, media)
     } else {
       return ctx.send(`No media found for query **${ sound }** :upside_down:`, { ephemeral: true })
