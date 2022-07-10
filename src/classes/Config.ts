@@ -28,7 +28,20 @@ export default class Config extends Low<RawConfig> {
 
   static async init(path: string) {
     const config = new Config(path)
+
     await config.read()
+    config.data = {
+      app: {
+        ...Config.defaultConfig.app,
+        ...(config.data.app ?? {}),
+      },
+      api: {
+        ...Config.defaultConfig.api,
+        ...(config.data.api ?? {}),
+      },
+    }
+    await config.write()
+
     return config
   }
 }
