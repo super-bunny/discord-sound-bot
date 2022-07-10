@@ -45,11 +45,11 @@ export default class MediaManager {
   }
 
   async refresh(): Promise<MediaManager> {
-    return fs.promises.readdir(this.mediaFolderPath)
-      .then(files => {
-        this.medias = files.map(filename => new Media(path.resolve(this.mediaFolderPath, filename)))
-        return this
-      })
+    const files = await fs.promises.readdir(this.mediaFolderPath)
+
+    this.medias = files.map(filename => new Media(path.resolve(this.mediaFolderPath, filename)))
+
+    return this
   }
 
   static async init(mediaFolderPath: string): Promise<MediaManager> {
