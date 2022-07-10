@@ -53,6 +53,8 @@ export default class Bot {
       ],
       partials: ['CHANNEL'],
     })
+
+    console.info(`${ mediaManager.medias.length } media(s) found`)
     await discord.login(process.env.DISCORD_TOKEN)
 
     const app = new Bot(discord, mediaManager, config)
