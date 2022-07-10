@@ -13,6 +13,7 @@ export default function printAppEnv() {
   console.info([
     '=========================================================',
     `App version: ${ version }`,
+    `Config: ${ process.env.CONFIG_FILE }`,
     `Media folder: ${ process.env.MEDIA_FOLDER }`,
     `API port: ${ process.env.API_PORT }`,
     `Discord app ID: ${ maskString(process.env.DISCORD_APP_ID ?? '') }`,
