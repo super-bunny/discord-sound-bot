@@ -1,6 +1,6 @@
 import env from 'env-var'
 import express from 'express'
-import Discord, { Client, Intents } from 'discord.js'
+import Discord, { Client, GatewayIntentBits, Partials } from 'discord.js'
 import MediaManager from './MediaManager'
 import Api from '../api'
 import Config from './Config'
@@ -45,13 +45,13 @@ export default class Bot {
     const mediaManager = await MediaManager.init(env.get('MEDIA_FOLDER').required().asString())
     const discord = new Discord.Client({
       intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_VOICE_STATES,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        Intents.FLAGS.DIRECT_MESSAGES,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.DirectMessages,
       ],
-      partials: ['CHANNEL'],
+      partials: [Partials.Channel],
     })
 
     console.info(`${ mediaManager.medias.length } media(s) found`)

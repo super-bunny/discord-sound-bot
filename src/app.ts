@@ -13,6 +13,7 @@ import SearchCommand from './slashCommands/search'
 import TokenCommand from './slashCommands/token'
 import renameMediaFile from './utils/renameMediaFile'
 import printAppEnv from './utils/printAppEnv'
+import { GatewayDispatchEvents } from 'discord-api-types/v10'
 
 async function main() {
   printAppEnv()
@@ -28,7 +29,7 @@ async function main() {
   })
   creator
     .withServer(new GatewayServer(
-      (handler) => bot.discord.ws.on('INTERACTION_CREATE', handler),
+      (handler) => bot.discord.ws.on(GatewayDispatchEvents.IntegrationCreate, handler),
     ))
     .registerCommands([
       new PingCommand(creator),

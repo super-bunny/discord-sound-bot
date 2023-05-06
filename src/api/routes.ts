@@ -1,4 +1,3 @@
-import { createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice'
 import { Application, Response } from 'express'
 import { createReadStream } from 'fs'
 import { ResponseLocals } from '../api.js'
@@ -6,6 +5,7 @@ import Bot from '../classes/Bot'
 import getUserVoiceChannel from '../utils/getUserVoiceChannel'
 import { responseWrapper } from './ApiUtils'
 import { ApiConfig } from '../types/Config'
+import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
 
 export default function (app: Application, bot: Bot, config: ApiConfig) {
   app.get('/', async (req, res) => {
@@ -71,15 +71,7 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
 
     commandThrottler?.registerUsage(tokenData.discordMemberId)
 
-    const connection = joinVoiceChannel({
-      channelId: channel.id,
-      guildId: channel.guild.id,
-      adapterCreator: channel.guild.voiceAdapterCreator,
-    })
-    const player = createAudioPlayer()
-    connection.subscribe(player)
-    player.play(createAudioResource(media.filepath))
-
+    playMediaInVoiceChannel(channel, media)
 
     res.json(responseWrapper(media.name))
   })
@@ -104,14 +96,7 @@ export default function (app: Application, bot: Bot, config: ApiConfig) {
     commandThrottler?.registerUsage(tokenData.discordMemberId)
 
     const media = bot.mediaManager.getRandomMedia()
-    const connection = joinVoiceChannel({
-      channelId: channel.id,
-      guildId: channel.guild.id,
-      adapterCreator: channel.guild.voiceAdapterCreator,
-    })
-    const player = createAudioPlayer()
-    connection.subscribe(player)
-    player.play(createAudioResource(media.filepath))
+    playMediaInVoiceChannel(channel, media)
 
     res.json(responseWrapper(media.name))
   })
