@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "description": "",
   "type": "module",
-  "exports": "./src/app.js",
+  "exports": "./src/index.js",
   "scripts": {
-    "start": "node --loader ts-node/esm -r dotenv/config --experimental-specifier-resolution=node src/app.js",
+    "start": "node --loader ts-node/esm -r dotenv/config --experimental-specifier-resolution=node src/index.js",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "commit-and-tag-version"
   },
