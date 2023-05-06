@@ -6,7 +6,8 @@
   "exports": "./src/app.js",
   "scripts": {
     "start": "node --loader ts-node/esm -r dotenv/config --experimental-specifier-resolution=node src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "commit-and-tag-version"
   },
   "author": "",
   "dependencies": {
@@ -35,6 +36,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/lodash": "^4.14.165",
-    "@types/node": "^14.6.0"
+    "@types/node": "^14.6.0",
+    "commit-and-tag-version": "^11.2.1"
   }
 }
