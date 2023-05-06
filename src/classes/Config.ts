@@ -1,5 +1,5 @@
 import { JSONFile, Low } from 'lowdb'
-import { RawConfig } from '../types/Config'
+import { RawConfig } from '../types/Config.js'
 
 export default class Config extends Low<RawConfig> {
   static defaultConfig: RawConfig = {

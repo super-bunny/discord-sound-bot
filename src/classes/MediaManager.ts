@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import Fuse from 'fuse.js'
 import * as path from 'path'
-import Media from './Media'
+import Media from './Media.js'
 
 export default class MediaManager {
   readonly mediaFolderPath: string

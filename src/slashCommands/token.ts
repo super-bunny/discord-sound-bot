@@ -1,5 +1,5 @@
 import { CommandContext, SlashCommand, SlashCreator } from 'slash-create'
-import Config from '../classes/Config'
+import Config from '../classes/Config.js'
 
 export default class TokenCommand extends SlashCommand {
   constructor(creator: SlashCreator, private config: Config) {

@@ -1,4 +1,4 @@
-import { CommandNames } from './CommandNames'
+import { CommandNames } from './CommandNames.js'
 
 export interface CommandThrottlingOptions {
   // Command usage allowed in duration

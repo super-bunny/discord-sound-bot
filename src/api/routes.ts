@@ -1,11 +1,11 @@
 import { Application, Response } from 'express'
 import { createReadStream } from 'fs'
 import { ResponseLocals } from '../api.js'
-import Bot from '../classes/Bot'
-import getUserVoiceChannel from '../utils/getUserVoiceChannel'
-import { responseWrapper } from './ApiUtils'
-import { ApiConfig } from '../types/Config'
-import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
+import Bot from '../classes/Bot.js'
+import getUserVoiceChannel from '../utils/getUserVoiceChannel.js'
+import { responseWrapper } from './ApiUtils.js'
+import { ApiConfig } from '../types/Config.js'
+import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel.js'
 
 export default function (app: Application, bot: Bot, config: ApiConfig) {
   app.get('/', async (req, res) => {

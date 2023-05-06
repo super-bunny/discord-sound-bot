@@ -9,10 +9,10 @@ import {
   ComponentType,
   SlashCreator,
 } from 'slash-create'
-import MediaManager from '../classes/MediaManager'
-import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel'
-import EnhancedSlashCommand, { EnhancedSlashCommandOptions } from '../classes/EnhancedSlashCommand'
-import Media from '../classes/Media'
+import MediaManager from '../classes/MediaManager.js'
+import playMediaInVoiceChannel from '../utils/playMediaInVoiceChannel.js'
+import EnhancedSlashCommand, { EnhancedSlashCommandOptions } from '../classes/EnhancedSlashCommand.js'
+import Media from '../classes/Media.js'
 
 export interface SlashCommandOptions {
   sound: string

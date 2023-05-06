@@ -1,6 +1,6 @@
 import { ButtonStyle, CommandContext, CommandOptionType, ComponentType, SlashCommand, SlashCreator } from 'slash-create'
-import Config from '../classes/Config'
-import MediaManager from '../classes/MediaManager'
+import Config from '../classes/Config.js'
+import MediaManager from '../classes/MediaManager.js'
 
 export interface Options {
   page?: number

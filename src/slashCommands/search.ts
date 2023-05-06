@@ -1,5 +1,5 @@
 import { CommandContext, CommandOptionType, SlashCommand, SlashCreator } from 'slash-create'
-import MediaManager from '../classes/MediaManager'
+import MediaManager from '../classes/MediaManager.js'
 
 export interface Options {
   query: string

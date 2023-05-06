@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "description": "",
   "type": "module",
-  "exports": "./src/index.js",
+  "main": "./dist/src/index.js",
   "scripts": {
-    "start": "node --loader ts-node/esm -r dotenv/config --experimental-specifier-resolution=node src/app.js",
+    "start": "npm run build && node dist/src/index.js",
+    "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release": "commit-and-tag-version"
+    "release": "commit-and-tag-version",
+    "postinstall": "patch-package"
   },
   "author": "",
   "dependencies": {
@@ -20,14 +22,16 @@
     "cors": "^2.8.5",
     "discord-api-types": "^0.37.41",
     "discord.js": "^14.10.2",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.3",
     "env-var": "^7.1.1",
     "express": "^4.17.2",
     "ffmpeg-static": "^4.2.7",
-    "fuse.js": "^6.4.1",
+    "fuse.js": "^6.6.2",
     "libsodium-wrappers": "^0.7.9",
     "lodash": "^4.17.21",
     "lowdb": "^3.0.0",
+    "patch-package": "^7.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "slash-create": "^5.12.0",
     "ts-node": "^10.4.0",
     "typescript": "^5.0.4"

@@ -1,11 +1,11 @@
 import env from 'env-var'
 import express from 'express'
 import Discord, { Client, GatewayIntentBits, Partials } from 'discord.js'
-import MediaManager from './MediaManager'
-import Api from '../api'
-import Config from './Config'
-import Cache from '../types/Cache'
-import Throttler from './Throttler'
+import MediaManager from './MediaManager.js'
+import Api from '../api.js'
+import Config from './Config.js'
+import Cache from '../types/Cache.js'
+import Throttler from './Throttler.js'
 
 export default class Bot {
   config: Config

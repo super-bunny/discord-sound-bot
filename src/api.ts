@@ -2,9 +2,9 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express, { CookieOptions, Response } from 'express'
-import routes from './api/routes'
-import Bot from './classes/Bot'
-import { ApiConfig, ApiConfigToken } from './types/Config'
+import routes from './api/routes.js'
+import Bot from './classes/Bot.js'
+import { ApiConfig, ApiConfigToken } from './types/Config.js'
 
 export interface ResponseLocals {
   tokenData?: ApiConfigToken

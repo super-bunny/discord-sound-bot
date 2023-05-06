@@ -1,5 +1,5 @@
 import { SlashCommand, SlashCommandOptions, SlashCreator, ThrottleObject } from 'slash-create'
-import Throttler from './Throttler'
+import Throttler from './Throttler.js'
 
 export type SlashCommandThrottles = Map<string, ThrottleObject>
 

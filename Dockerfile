@@ -1,5 +1,4 @@
-# Build stage
-FROM node:16
+FROM node:18 as build
 
 ENV API_PORT=3000
 ENV MEDIA_FOLDER='/app/medias'
@@ -13,8 +12,25 @@ WORKDIR /app/
 
 COPY package.json yarn.lock ./
 
-RUN yarn
+RUN yarn install --frozen-lockfile
+
+COPY patches/ patches/
+
+RUN yarn postinstall
 
 COPY . ./
 
-CMD yarn start
+RUN yarn build
+
+
+FROM node:18 as run
+
+WORKDIR /app/
+
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package.json .
+
+RUN ls -l
+
+CMD node .

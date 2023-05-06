@@ -1,5 +1,5 @@
-import { ThrottleAllowedCommands } from './Config'
-import Throttler from '../classes/Throttler'
+import { ThrottleAllowedCommands } from './Config.js'
+import Throttler from '../classes/Throttler.js'
 
 export default interface Cache {
   throttles: Record<ThrottleAllowedCommands, Throttler | undefined>
