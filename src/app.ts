@@ -45,7 +45,7 @@ async function main() {
       new ListCommand(creator, bot.mediaManager, config),
       new TokenCommand(creator, config),
     ])
-    .syncCommands({ deleteCommands: true }) // Sync command with Discord API
+    .syncCommands({ deleteCommands: true }) // Sync slash commands with Discord API
     .on('debug', (message) => console.log(message))
     .on('warn', (message) => console.warn(message))
     .on('error', (error) => console.error(error))
@@ -55,6 +55,11 @@ async function main() {
     .on('commandRegister', (command) =>
       console.info(`Registered command ${ command.commandName }`))
     .on('commandError', (command, error) => console.error(`Command ${ command.commandName }:`, error))
+
+  // Sync global slash commands with Discord API
+  creator.syncGlobalCommands(true)
+    .then(() => console.info('Global commands synced!'))
+    .catch(error => console.error('Fail to sync global commands: ', error.message))
 
   const watcher = chokidar.watch(env.get('MEDIA_FOLDER').required().asString(), {
     ignored: /^\./,
