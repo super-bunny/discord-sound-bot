@@ -32,7 +32,7 @@ async function main() {
   })
   creator
     .withServer(new GatewayServer(
-      (handler) => bot.discord.ws.on(GatewayDispatchEvents.IntegrationCreate, handler),
+      (handler) => bot.discord.ws.on(GatewayDispatchEvents.InteractionCreate, handler),
     ))
     .registerCommands([
       new PingCommand(creator),
