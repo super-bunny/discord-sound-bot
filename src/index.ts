@@ -30,6 +30,7 @@ async function main() {
     applicationID: env.get('DISCORD_APP_ID').required().asString(),
     publicKey: env.get('DISCORD_PUBLIC_KEY').required().asString(),
     token: env.get('DISCORD_TOKEN').required().asString(),
+    client: bot.discord,
   })
   creator
     .withServer(new GatewayServer(
@@ -50,7 +51,6 @@ async function main() {
       new ListCommand(creator, bot.mediaManager, config),
       new TokenCommand(creator, config),
     ])
-    .syncCommands({ deleteCommands: true }) // Sync slash commands with Discord API
     .on('debug', (message) => console.log(message))
     .on('warn', (message) => console.warn(message))
     .on('error', (error) => console.error(error))
