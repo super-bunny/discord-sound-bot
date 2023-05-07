@@ -15,6 +15,7 @@ import renameMediaFile from './utils/renameMediaFile.js'
 import printAppEnv from './utils/printAppEnv.js'
 import { GatewayDispatchEvents } from 'discord-api-types/v10'
 import dotenv from 'dotenv'
+import StatusCommand from './slashCommands/status.js'
 
 dotenv.config()
 
@@ -35,6 +36,7 @@ async function main() {
       (handler) => bot.discord.ws.on(GatewayDispatchEvents.InteractionCreate, handler),
     ))
     .registerCommands([
+      StatusCommand,
       new PingCommand(creator),
       new PlayCommand(creator, bot.discord, bot.mediaManager, {
         throttling: config.data.app.commandThrottling?.play,

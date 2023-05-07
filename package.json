@@ -30,6 +30,7 @@
     "libsodium-wrappers": "^0.7.9",
     "lodash": "^4.17.21",
     "lowdb": "^3.0.0",
+    "moment": "^2.29.4",
     "patch-package": "^7.0.0",
     "postinstall-postinstall": "^2.1.0",
     "slash-create": "^5.12.0",
