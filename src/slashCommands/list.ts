@@ -1,6 +1,6 @@
-import { ButtonStyle, CommandOptionType, ComponentType, SlashCommand } from 'slash-create'
-import MediaManager from '../classes/MediaManager'
-import Config from '../classes/Config'
+import { ButtonStyle, CommandContext, CommandOptionType, ComponentType, SlashCommand, SlashCreator } from 'slash-create'
+import Config from '../classes/Config.js'
+import MediaManager from '../classes/MediaManager.js'
 
 export interface Options {
   page?: number
@@ -10,7 +10,7 @@ const PREVIOUS_PAGE_BUTTON_ID = 'list_cmd_previous_page_btn'
 const NEXT_PAGE_BUTTON_ID = 'list_cmd_next_page_btn'
 
 export default class ListCommand extends SlashCommand {
-  constructor(creator, private mediaManager: MediaManager, private config: Config) {
+  constructor(creator: SlashCreator, private mediaManager: MediaManager, private config: Config) {
     super(creator, {
       name: 'list',
       description: 'List all available sounds',
@@ -44,7 +44,7 @@ export default class ListCommand extends SlashCommand {
     ].join('\n')
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
     const { page = 1 } = ctx.options as Options
 
     await ctx.defer(true)
@@ -97,7 +97,7 @@ export default class ListCommand extends SlashCommand {
   // Retrieve page number from a List command message
   static getPageFromMessage(message: string): number {
     const firstLine = message.split('\n')[0]
-    const pageStr = firstLine.split(' ').pop().split('/')[0]
+    const pageStr = firstLine.split(' ').pop()!.split('/')[0]
 
     return parseInt(pageStr)
   }

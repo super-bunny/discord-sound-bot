@@ -1,15 +1,15 @@
-import { SlashCommand } from 'slash-create'
-import Config from '../classes/Config'
+import { CommandContext, SlashCommand, SlashCreator } from 'slash-create'
+import Config from '../classes/Config.js'
 
 export default class TokenCommand extends SlashCommand {
-  constructor(creator, private config: Config) {
+  constructor(creator: SlashCreator, private config: Config) {
     super(creator, {
       name: 'token',
       description: 'Get your api token if you have an access',
     })
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
     const userId = ctx.user.id
     const userConfig = this.config.data.api.tokens
       .find(token => token.discordMemberId === userId)

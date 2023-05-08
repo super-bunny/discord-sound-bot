@@ -3,45 +3,54 @@ import chokidar from 'chokidar'
 import env from 'env-var'
 import fs from 'fs'
 import { GatewayServer, SlashCreator } from 'slash-create'
-import Bot from './classes/Bot'
-import Config from './classes/Config'
-import PCommand from './slashCommands/alias/p'
-import ListCommand from './slashCommands/list'
-import PingCommand from './slashCommands/ping'
-import PlayCommand from './slashCommands/play'
-import RandomCommand from './slashCommands/random'
-import SearchCommand from './slashCommands/search'
-import TokenCommand from './slashCommands/token'
-import renameMediaFile from './utils/renameMediaFile'
+import Bot from './classes/Bot.js'
+import Config from './classes/Config.js'
+import ListCommand from './slashCommands/list.js'
+import PingCommand from './slashCommands/ping.js'
+import PlayCommand from './slashCommands/play.js'
+import RandomCommand from './slashCommands/random.js'
+import SearchCommand from './slashCommands/search.js'
+import TokenCommand from './slashCommands/token.js'
+import renameMediaFile from './utils/renameMediaFile.js'
+import printAppEnv from './utils/printAppEnv.js'
+import { GatewayDispatchEvents } from 'discord-api-types/v10'
+import dotenv from 'dotenv'
+import StatusCommand from './slashCommands/status.js'
 
-env.get('CONFIG_FILE').asUrlString
-env.get('MEDIA_FOLDER').required().asString()
-env.get('DISCORD_TOKEN').required().asString()
+dotenv.config()
 
 async function main() {
-  const config = await Config.init(process.env.CONFIG_FILE || './config.json')
+  printAppEnv()
+
+  const config = await Config.init(env.get('CONFIG_FILE').asString() || './config.json')
 
   const bot = await Bot.start(config)
 
   const creator = new SlashCreator({
-    applicationID: process.env.DISCORD_APP_ID,
-    publicKey: process.env.DISCORD_PUBLIC_KEY,
-    token: process.env.DISCORD_TOKEN,
+    applicationID: env.get('DISCORD_APP_ID').required().asString(),
+    publicKey: env.get('DISCORD_PUBLIC_KEY').required().asString(),
+    token: env.get('DISCORD_TOKEN').required().asString(),
+    client: bot.discord,
   })
   creator
     .withServer(new GatewayServer(
-      (handler) => bot.discord.ws.on('INTERACTION_CREATE', handler),
+      (handler) => bot.discord.ws.on(GatewayDispatchEvents.InteractionCreate, handler),
     ))
     .registerCommands([
-      new PlayCommand(creator, bot.discord, bot.mediaManager),
-      new PCommand(creator, bot.discord, bot.mediaManager), // Alias of Play command
+      StatusCommand,
       new PingCommand(creator),
-      new RandomCommand(creator, bot.discord, bot.mediaManager),
+      new PlayCommand(creator, bot.discord, bot.mediaManager, {
+        throttling: config.data.app.commandThrottling?.play,
+        throttleCache: bot.cache.throttles.play?.cache,
+      }),
+      new RandomCommand(creator, bot.discord, bot.mediaManager, {
+        throttling: config.data.app.commandThrottling?.random,
+        throttleCache: bot.cache.throttles.random?.cache,
+      }),
       new SearchCommand(creator, bot.mediaManager),
       new ListCommand(creator, bot.mediaManager, config),
       new TokenCommand(creator, config),
     ])
-    .syncCommands() // Sync command with Discord API
     .on('debug', (message) => console.log(message))
     .on('warn', (message) => console.warn(message))
     .on('error', (error) => console.error(error))
@@ -52,7 +61,12 @@ async function main() {
       console.info(`Registered command ${ command.commandName }`))
     .on('commandError', (command, error) => console.error(`Command ${ command.commandName }:`, error))
 
-  const watcher = chokidar.watch(process.env.MEDIA_FOLDER, {
+  // Sync global slash commands with Discord API
+  creator.syncGlobalCommands(true)
+    .then(() => console.info('Global commands synced!'))
+    .catch(error => console.error('Fail to sync global commands: ', error.message))
+
+  const watcher = chokidar.watch(env.get('MEDIA_FOLDER').required().asString(), {
     ignored: /^\./,
     persistent: true,
     ignoreInitial: true,
@@ -96,7 +110,7 @@ async function main() {
     if (oldMember.channelId !== null && oldMember.channelId !== newMember.channelId) {
       const connection = getVoiceConnection(oldMember.guild.id)
       // If last channel member is this bot
-      if (connection && oldMember.channel.members.every(member => member.user.bot)) {
+      if (connection && oldMember.channel?.members.every(member => member.user.bot)) {
         connection.disconnect()
       }
     }

@@ -1,0 +1,26 @@
+diff --git a/node_modules/fuse.js/package.json b/node_modules/fuse.js/package.json
+index 6d02a4e..8e83ae8 100644
+--- a/node_modules/fuse.js/package.json
++++ b/node_modules/fuse.js/package.json
+@@ -9,7 +9,20 @@
+   "module": "./dist/fuse.esm.js",
+   "unpkg": "./dist/fuse.js",
+   "jsdelivr": "./dist/fuse.js",
+-  "typings": "./dist/fuse.d.ts",
++  "types": "./dist/fuse.d.ts",
++  "type": "module",
++  "exports": {
++    ".": {
++      "import": {
++        "types": "./dist/fuse.d.ts",
++        "default": "./dist/fuse.esm.js"
++      },
++      "require": {
++        "types": "./dist/fuse.d.ts",
++        "default": "./dist/fuse.common.js"
++      }
++    }
++  },
+   "sideEffects": false,
+   "files": [
+     "dist"

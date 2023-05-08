@@ -1,22 +1,5 @@
 import { JSONFile, Low } from 'lowdb'
-
-export interface RawConfig {
-  app: AppConfig
-  api: ApiConfig
-}
-
-export interface AppConfig {
-  listPageSize: number
-  ownerDiscordId: string
-  roleDiscordName: string
-}
-
-export interface ApiConfig {
-  tokens: Array<{
-    token: string
-    discordMemberId: string
-  }>
-}
+import { RawConfig } from '../types/Config.js'
 
 export default class Config extends Low<RawConfig> {
   static defaultConfig: RawConfig = {
@@ -32,6 +15,9 @@ export default class Config extends Low<RawConfig> {
 
   readonly path: string
 
+  // Override Lowdb data property to make it non nullable
+  data: RawConfig
+
   constructor(path: string) {
     const adapter = new JSONFile<RawConfig>(path)
     super(adapter)
@@ -42,7 +28,20 @@ export default class Config extends Low<RawConfig> {
 
   static async init(path: string) {
     const config = new Config(path)
+
     await config.read()
+    config.data = {
+      app: {
+        ...Config.defaultConfig.app,
+        ...(config.data.app ?? {}),
+      },
+      api: {
+        ...Config.defaultConfig.api,
+        ...(config.data.api ?? {}),
+      },
+    }
+    await config.write()
+
     return config
   }
 }

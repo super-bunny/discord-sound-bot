@@ -1,12 +1,12 @@
-import { CommandOptionType, SlashCommand } from 'slash-create'
-import MediaManager from '../classes/MediaManager'
+import { CommandContext, CommandOptionType, SlashCommand, SlashCreator } from 'slash-create'
+import MediaManager from '../classes/MediaManager.js'
 
 export interface Options {
   query: string
 }
 
 export default class SearchCommand extends SlashCommand {
-  constructor(creator, private mediaManager: MediaManager) {
+  constructor(creator: SlashCreator, private mediaManager: MediaManager) {
     super(creator, {
       name: 'search',
       description: 'Search a sound (show 5 best results)',
@@ -21,7 +21,7 @@ export default class SearchCommand extends SlashCommand {
     })
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
     const { query } = ctx.options as Options
 
     const mediaSearchResults = this.mediaManager.getBySearch(query)

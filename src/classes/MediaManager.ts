@@ -1,11 +1,11 @@
 import * as fs from 'fs'
-import * as path from 'path'
 import Fuse from 'fuse.js'
-import Media from './Media'
+import * as path from 'path'
+import Media from './Media.js'
 
 export default class MediaManager {
   readonly mediaFolderPath: string
-  medias: Media[]
+  medias: Media[] = []
 
   constructor(mediaFolderPath: string) {
     this.mediaFolderPath = mediaFolderPath
@@ -40,19 +40,19 @@ export default class MediaManager {
 
     return results.map(result => ({
       ...result.item,
-      score: result.score,
+      score: result.score!,
     }))
   }
 
   async refresh(): Promise<MediaManager> {
-    return fs.promises.readdir(this.mediaFolderPath)
-      .then(files => {
-        this.medias = files.map(filename => new Media(path.resolve(this.mediaFolderPath, filename)))
-        return this
-      })
+    const files = await fs.promises.readdir(this.mediaFolderPath)
+
+    this.medias = files.map(filename => new Media(path.resolve(this.mediaFolderPath, filename)))
+
+    return this
   }
 
-  static async init(mediaFolderPath): Promise<MediaManager> {
+  static async init(mediaFolderPath: string): Promise<MediaManager> {
     return new MediaManager(mediaFolderPath)
       .refresh()
   }
